@@ -1,0 +1,98 @@
+{
+  "animal": [
+    { "id": 1, "term": "Elephant", "tabooWords": ["Trunk", "Tusks", "Big"]},
+    { "id": 2, "term": "Cheetah", "tabooWords": ["Fast", "Run", "Spots"]},
+    { "id": 3, "term": "Penguin", "tabooWords": ["Bird", "Cold", "Waddle"]},
+    { "id": 4, "term": "Kangaroo", "tabooWords": ["Australia", "Jump", "Pouch"]},
+    { "id": 5, "term": "Dolphin", "tabooWords": ["Ocean", "Smart", "Whistle"]},
+    { "id": 6, "term": "Giraffe", "tabooWords": ["Tall", "Neck", "Spots"]},
+    { "id": 7, "term": "Lion", "tabooWords": ["King", "Roar", "Jungle"]},
+    { "id": 8, "term": "Panda", "tabooWords": ["Bamboo", "China", "Black and White"]},
+    { "id": 9, "term": "Octopus", "tabooWords": ["Tentacles", "Ocean", "Ink"]},
+    { "id": 10, "term": "Hedgehog", "tabooWords": ["Spines", "Small", "Cute"]}
+  ],
+  "celebrity": [
+    { "id": 1, "term": "Beyoncé", "tabooWords": ["Singer", "Jay-Z", "Destiny's Child"]},
+    { "id": 2, "term": "Dwayne Johnson", "tabooWords": ["Rock", "Wrestler", "Muscles"]},
+    { "id":3, "term": "Elon Musk", "tabooWords": ["Tesla", "SpaceX", "Billionaire", "X", "Twitter"]},
+    { "id": 4, "term": "Oprah Winfrey", "tabooWords": ["Talk Show", "Host", "TV"]},
+    { "id": 5, "term": "Taylor Swift", "tabooWords": ["Singer", "Songwriter", "Pop"]},
+    { "id": 6, "term": "Tom Hanks", "tabooWords": ["Actor", "Movies", "Forrest Gump"]},
+    { "id": 7, "term": "Rihanna", "tabooWords": ["Singer", "Barbados", "Fenty"]},
+    { "id": 8, "term": "Kim Kardashian", "tabooWords": ["Reality TV", "Kardashian", "Influencer"]},
+    { "id": 9, "term": "Cristiano Ronaldo", "tabooWords": ["Football", "Portugal", "Goal"]},
+    { "id": 10, "term": "Zendaya", "tabooWords": ["Euphoria", "Spider-Man", "Actress"]}
+  ],
+  "sports": [
+    { "id": 1, "term": "Cristiano Ronaldo", "tabooWords": ["Football", "Portugal", "Goal"]},
+    { "id": 2, "term": "Basketball", "tabooWords": ["Hoop", "NBA", "Dribble"]},
+    { "id": 3, "term": "Serena Williams", "tabooWords": ["Tennis", "Grand Slam", "Sister"]},
+    { "id": 4, "term": "Formula 1", "tabooWords": ["Racing", "Car", "Speed"]},
+    { "id": 5, "term": "Shaquille O'Neal", "tabooWords": ["Tall", "NBA", "Center"]},
+    { "id": 6, "term": "Olympics", "tabooWords": ["Games", "Gold Medal", "Athlete"]},
+    { "id": 7, "term": "Penalty Kick", "tabooWords": ["Goalkeeper", "Foul", "Shoot"]},
+    { "id": 8, "term": "Michael Jordan", "tabooWords": ["Air", "Bulls", "23"]},
+    { "id": 9, "term": "Wrestling", "tabooWords": ["Fight", "Ring", "WWE"]},
+    { "id": 10, "term": "Marathon", "tabooWords": ["Race", "Long", "Run"]}
+  ],
+  "music": [
+    { "id": 1, "term": "Rock and Roll", "tabooWords": ["Guitar", "Band", "Drums"]},
+    { "id": 2, "term": "Jazz", "tabooWords": ["Saxophone", "Improvisation", "Blues"]},
+    { "id": 3, "term": "Pop Music", "tabooWords": ["Chart", "Dance", "Catchy"]},
+    { "id": 4, "term": "Classical Music", "tabooWords": ["Orchestra", "Symphony", "Beethoven"]},
+    { "id": 5, "term": "Hip Hop", "tabooWords": ["Rap", "Beats", "MC"]},
+    { "id": 6, "term": "Country Music", "tabooWords": ["Guitar", "Nashville", "Fiddle"]},
+    { "id": 7, "term": "Reggae", "tabooWords": ["Bob Marley", "Island", "Rhythm"]},
+    { "id": 8, "term": "Electronic Dance Music (EDM)", "tabooWords": ["DJ", "Party", "Beats"]},
+    { "id": 9, "term": "Indie Rock", "tabooWords": ["Alternative", "Guitar", "Band"]},
+    { "id": 10, "term": "R&B", "tabooWords": ["Soul", "Rhythm", "Blues"]}
+  ],
+  "history": [
+    { "id": 1, "term": "World War II", "tabooWords": ["War","Guns","Conflict","Allies"]},
+    { "id": 2, "term": "Ancient Egypt", "tabooWords": ["Pyramids","Pharaohs","Nile"]},
+    { "id": 3, "term": "Renaissance", "tabooWords": ["Art","Culture","Leonardo da Vinci"]},
+    { "id": 4, "term": "American Revolution", "tabooWords": ["Independence","Colonies","George Washington"]},
+    { "id": 5, "term": "Civil Rights Movement", "tabooWords": ["Equality","Martin Luther King Jr.","Racism"]},
+    { "id": 6, "term": "Industrial Revolution", "tabooWords": ["Machines","Factories","Steam Engine"]},
+    { "id": 7, "term": "Cold War", "tabooWords": ["USA","USSR","Nuclear"]},
+    { "id": 8, "term": "French Revolution", "tabooWords": ["Liberty","Equality","Bastille"]},
+    { "id": 9, "term": "Ancient Greece", "tabooWords": ["Philosophy","Democracy","Olympics"]},
+    { "id": 10, "term": "Mayan Civilization", "tabooWords": ["Pyramids","Calendar","Jungle","Chichen Itza"]}
+  ],
+  "science": [
+    { "id": 1, "term": "Physics", "tabooWords": ["Force", "Energy", "Mass"]},
+    { "id": 2, "term": "Chemistry", "tabooWords": ["Elements", "Reactions", "Molecules"]},
+    { "id": 3, "term": "Biology", "tabooWords": ["Cells", "DNA", "Evolution"]},
+    { "id": 4, "term": "Astronomy", "tabooWords": ["Stars", "Planets", "Universe"]},
+    { "id": 5, "term": "Geology", "tabooWords": ["Rocks", "Earth", "Fossils"]},
+    { "id": 6, "term": "Mathematics", "tabooWords": ["Numbers", "Equations", "Calculus"]},
+    { "id": 7, "term": "Psychology", "tabooWords": ["Mind", "Behavior", "Mental"]},
+    { "id": 8, "term": "Ecology", "tabooWords": ["Environment", "Ecosystem", "Biodiversity"]},
+    { "id": 9, "term": "Anatomy", "tabooWords": ["Body", "Organs", "Structure"]},
+    { "id": 10, "term": "Genetics", "tabooWords": ["DNA", "Heredity", "Genes"]}
+  ],
+  "art": [
+    { "id": 1, "term": "Painting", "tabooWords": ["Canvas", "Brush", "Color"]},
+    { "id": 2, "term": "Sculpture", "tabooWords": ["Stone", "Chisel", "3D"]},
+    { "id": 3, "term": "Photography", "tabooWords": ["Camera", "Lens", "Capture"]},
+    { "id": 4, "term": "Music", "tabooWords": ["Melody", "Rhythm", "Notes"]},
+    { "id": 5, "term": "Dance", "tabooWords": ["Movement", "Choreography", "Performance"]},
+    { "id": 6, "term": "Theater", "tabooWords": ["Acting", "Stage", "Play"]},
+    { "id": 7, "term": "Literature", "tabooWords": ["Books", "Writing", "Poetry"]},
+    { "id": 8, "term": "Architecture", "tabooWords": ["Building", "Design", "Structure"]},
+    { "id": 9, "term": "Film", "tabooWords": ["Cinema", "Director", "Screenplay"]},
+    { "id": 10, "term": "Fashion", "tabooWords": ["Clothing", "Style", "Design"]}
+  ],
+  "geography": [
+    { "id": 1, "term": "Mount Everest", "tabooWords": ["Tallest", "Himalayas", "Nepal"]},
+    { "id": 2, "term": "Amazon Rainforest", "tabooWords": ["Trees", "Biodiversity", "South America"]},
+    { "id": 3, "term": "Sahara Desert", "tabooWords": ["Hot", "Sand", "Africa"]},
+    { "id": 4, "term": "Great Wall of China", "tabooWords": ["Long", "China", "History"]},
+    { "id": 5, "term": "Grand Canyon", "tabooWords": ["USA", "Nature", "Rocks"]},
+    { "id": 6, "term": "Eiffel Tower", "tabooWords": ["Paris", "Landmark", "France"]},
+    { "id": 7, "term": "Great Barrier Reef", "tabooWords": ["Coral", "Australia", "Ocean"]},
+    { "id": 8, "term": "Niagara Falls", "tabooWords": ["Waterfall", "USA/Canada", "Tourist"]},
+    { "id": 9, "term": "Machu Picchu", "tabooWords": ["Inca", "Peru", "Ancient"]},
+    { "id": 10, "term": "Iceland", "tabooWords": ["Volcanoes", "Glaciers", "Nordic"]}
+  ]
+}

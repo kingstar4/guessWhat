@@ -1,0 +1,32 @@
+flowchart TD
+    A[Launch App] --> B[Home Screen]
+    B --> C1[Start New Game]
+    B --> C2[Join Game via Code]
+
+    C1 --> D1[Enter Game Name]
+    C2 --> D2[Enter 6-digit Code]
+
+    D1 --> E[Team Setup]
+    D2 --> E
+
+    E --> F[Category Selection]
+    F --> G[Waiting Room]
+
+    G --> H[Start Game]
+    H --> I[Gameplay Screen - Show Word]
+    I --> J{Guess Outcome?}
+
+    J -->|Correct| K[Increase Team Score]
+    J -->|Pass| L[Skip Word]
+
+    K --> M{Time Left?}
+    L --> M
+
+    M -->|Yes| I
+    M -->|No| N[Show Round Results]
+
+    N --> O{Switch Team?}
+    O -->|Yes| H
+    O -->|No| P[Show Final Scores]
+
+    P --> Q[Play Again or Return Home]

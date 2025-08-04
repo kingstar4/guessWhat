@@ -1,0 +1,27 @@
+flowchart TD
+    A[App.tsx / Navigation Root] --> B[HomeScreen]
+    
+    B --> C1[StartGameScreen]
+    B --> C2[JoinGameScreen]
+    B --> C3[SettingsScreen]
+
+    C1 --> D[TeamSetupScreen]
+    D --> E[CategorySelectionScreen]
+    E --> F[WaitingRoomScreen]
+    F --> G[GamePlayScreen]
+
+    C2 --> F 
+
+    G --> H1[Correct/Pass Logic]
+    H1 --> H2{Timer Expired?}
+    H2 -->|No| G
+    H2 -->|Yes| I[RoundResultsScreen]
+
+    I --> J{Next Team?}
+    J -->|Yes| G
+    J -->|No| K[FinalScoreScreen]
+
+    K --> L1[PlayAgain -> StartGameScreen]
+    K --> L2[Home]
+
+    SettingsScreen --> B
