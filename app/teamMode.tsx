@@ -17,8 +17,8 @@ const TeamMode = (props: Props) => {
       </View> */}
       <View style={styles.container}>
         <View style={styles.btnContainer}>  
-          <NavigateButton title='Create Team' to='/create'/> 
-          <NavigateButton title='Join Team' to='/join'/>
+          <NavigateButton title='Create Team' to='/create' buttonStyle={styles.btn}/> 
+          <NavigateButton title='Join Team' to='/join' buttonStyle={styles.btn}/>
         </View>
       </View>
     </SafeAreaView>
@@ -44,12 +44,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
 
   },
+  btn:{
+    width: '100%',
+  },
   btnContainer:{
     alignItems: 'center',
     justifyContent:'space-between',
     flexDirection: 'column',
     height: 192,
-    width: width,
+    width: width-40,
     
   }
 })

@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import ActionButton from '../components/ui/ActionButtion';
+import ActionButton from '../components/ui/ActionButton';
 import { useGameStore } from '../store/useGameStore';
 
 const TIME_OPTIONS = [
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
   },
   timeButton: {
     backgroundColor: '#f0f0f0',
-    padding: 20,
-    borderRadius: 10,
+    padding: 15,
+    borderRadius: 20,
     alignItems: 'center',
     ...Platform.select({
       ios: {

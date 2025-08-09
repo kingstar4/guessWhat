@@ -1,6 +1,7 @@
-// store/usePlayerStore.ts
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 type Role = 'describer' | 'guesser' | 'spectator'
 
@@ -20,7 +21,7 @@ interface PlayerState {
 }
 
 export const usePlayerStore = create<PlayerState>()(
-  persist(
+  persist<PlayerState>(
     (set) => ({
       userId: null,
       name: '',
@@ -45,6 +46,7 @@ export const usePlayerStore = create<PlayerState>()(
     }),
     {
       name: 'player-store',
+      storage: createJSONStorage(()=> AsyncStorage),
     }
   )
 )

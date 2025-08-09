@@ -1,12 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { ResizeMode, Video } from 'expo-av';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 import { GameControls } from '../components/ui/ArrowButton';
 import { useGameStore } from '../store/useGameStore';
 import shuffleArray from '../utils/shuffle';
-
 
 type GameStatus = 'loading' | 'running' | 'ended';
 
@@ -133,48 +133,58 @@ const GameRoom = () => {
   }
 
   return (
-    <ScrollView>
-          <View style={styles.container}>
-            {/* Timer and Score */}
-            <View style={styles.topBar}>
-              <View style={styles.scoreContainer}>
-                <Text style={styles.scoreText}>
-                  <MaterialIcons name='thumb-up' color='green' /> {getCorrectCount()} | <MaterialIcons name='thumb-down' color='red'/> {getWrongCount()}
-                </Text>
-              </View>
-              <View style={styles.timerContainer}>
-                <Text style={styles.timerText}>{timeLeft}s</Text>
-              </View>
-            </View>
-
-            {/* Main Content */}
-            <View style={styles.mainContent}>
-              <View style={styles.wordContainer}>
-                <Text style={styles.mainWord}>{currentWord.term}</Text>
-              </View>
-
-              <View style={styles.tabooContainer}>
-                {/* <Text style={styles.tabooTitle}>{`Can't say:`}</Text> */}
-                {currentWord.tabooWords.map((word, index) => (
-                  <View style={{ flexDirection: 'row', alignItems: 'center'}} key={index}>
-                    <View key={index} style={styles.tabooWordContainer}>
-                      <Text style={styles.tabooWord}>{word}</Text>
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-
-            {/* Game Controls */}
-            <View style={styles.controlsSection}>
-              <GameControls
-                onCorrect={() => handleAnswer(true)}
-                onWrong={() => handleAnswer(false)}
-                disabled={timeLeft <= 0}
-              />
-            </View>
+      <View style={styles.container}>
+        <Video
+          shouldPlay= {true}
+          isLooping= {true}
+          source={require('../assets/videos/game.mp4')}
+          resizeMode={ResizeMode.COVER}
+          style={styles.video}
+          isMuted={true}
+          useNativeControls={false}
+        />
+        <View style={styles.overlay}/>
+        <View style={styles.contentContainer}>
+        {/* Timer and Score */}
+        <View style={styles.topBar}>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreText}>
+              <MaterialIcons name='thumb-up' color='green' size={15} /> {getCorrectCount()} | <MaterialIcons name='thumb-down' color='red' size={15}/> {getWrongCount()}
+            </Text>
           </View>
-    </ScrollView>
+          <View style={styles.timerContainer}>
+            <Text style={styles.timerText}>{timeLeft}s</Text>
+          </View>
+        </View>
+
+        {/* Main Content */}
+        <View style={styles.mainContent}>
+          <View style={styles.wordContainer}>
+            <Text style={styles.mainWord}>{currentWord.term}</Text>
+          </View>
+
+          <View style={styles.tabooContainer}>
+            {/* <Text style={styles.tabooTitle}>{`Can't say:`}</Text> */}
+            {currentWord.tabooWords.map((word, index) => (
+              <View style={{ flexDirection: 'row', alignItems: 'center'}} key={index}>
+                <View key={index} style={styles.tabooWordContainer}>
+                  <Text style={styles.tabooWord}>{word}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Game Controls */}
+        <View style={styles.controlsSection}>
+          <GameControls
+            onCorrect={() => handleAnswer(true)}
+            onWrong={() => handleAnswer(false)}
+            disabled={timeLeft <= 0}
+          />
+        </View>
+        </View>
+      </View>
   );
 };
 
@@ -184,7 +194,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    paddingVertical: 0,
+    paddingHorizontal: 20,
+  },
+  contentContainer:{
+    flex:1,
+    zIndex:2,
+    padding:10,
+
+  },
+  overlay:{
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', 
+    zIndex: 1,
   },
   centerContent: {
     alignItems: 'center',
@@ -202,7 +224,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
     paddingTop: 10,
     paddingHorizontal: 30,
   },
@@ -213,6 +234,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   scoreText: {
+    textAlign: 'center',
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent:'center',
     fontSize: 20,
     fontWeight: '600',
     color: '#333',
@@ -243,12 +268,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   mainContent: {
-    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   wordContainer: {
-    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 40,
@@ -257,7 +280,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#333',
+    color: '#ffffff',
     paddingHorizontal: 20,
   },
   tabooContainer: {
@@ -265,7 +288,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginBottom: 40, 
+    marginBottom: 30, 
   },
   tabooTitle: {
     fontSize: 18,
@@ -299,5 +322,13 @@ const styles = StyleSheet.create({
   },
   controlsSection: {
     paddingBottom: 20,
+    zIndex:3,
   },
+  video:{
+   position: 'absolute',
+   top:0,
+   bottom:0,
+   left:0,
+   right:0
+  }
 });

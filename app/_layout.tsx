@@ -27,7 +27,7 @@ export default function RootLayout() {
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="home" options={{ headerShown: false }} />
-            <Stack.Screen name="teamMode"  />
+            <Stack.Screen name="teamMode" options={{headerTitle: 'Team Mode'}} />
             <Stack.Screen name="category/index" options={{ headerTitle: 'Categories'}} />
             <Stack.Screen name="gameRoom" options={{  headerShown: false}}/>
             <Stack.Screen name="result/index" options={{  headerShown: false}}/>

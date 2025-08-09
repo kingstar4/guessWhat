@@ -1,9 +1,12 @@
+import { usePortraitLock } from '@/hooks/usePortrait';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useGameStore } from '../../store/useGameStore';
 
 const GameResults = () => {
+  
+  usePortraitLock();
   const router = useRouter();
   const { 
     correctAnswers, 
@@ -19,6 +22,7 @@ const GameResults = () => {
   const gameDuration = gameStartTime && gameEndTime ? 
     Math.round((gameEndTime - gameStartTime) / 1000) : 0;
 
+
   const handlePlayAgain = () => {
     resetGame();
     router.replace('/category');
@@ -26,7 +30,7 @@ const GameResults = () => {
 
   const handleBackToHome = () => {
     resetGame();
-    router.replace('/');
+    router.replace('/home');
   };
 
   const renderAnswerList = (answers: typeof correctAnswers, title: string, color: string) => (

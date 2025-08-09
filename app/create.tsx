@@ -1,9 +1,9 @@
-import ActionButton from '@/components/ui/ActionButtion';
+import ActionButton from '@/components/ui/ActionButton';
 import TextField from '@/components/ui/TextField';
 import { usePlayerStore } from '@/store/usePlayerStore';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import uuid from 'react-native-uuid';
 import { supabase } from '../lib/supabase';
 
@@ -17,51 +17,60 @@ const CreateTeamScreen = (props: Props) => {
   const [roomCode] = useState(() => uuid.v4().slice(0, 6).toUpperCase());
   const [roomId] = useState(() => uuid.v4()); // Store roomId in state so it doesn't change
   const router = useRouter()
+  const validForm = teamName.trim() !== '' && hostName.trim() !== '';
+   const hasHydrated = usePlayerStore.persist.hasHydrated; 
 
   const handleCreateTeam = async () => {
-  if (!teamName || !hostName) {
-    alert('Please enter both team and player name.')
-    return
-  }
+    if (!teamName || !hostName) {
+      alert('Please enter both team and player name.')
+      return
+    }
 
-  const userId = uuid.v4() // Generate UUID for the user
+    const userId = uuid.v4() // Generate UUID for the user
 
-  // 1. Save to Supabase
-  const { error: roomError } = await supabase.from('rooms').insert({
-    id: roomId, // Using the stored UUID
-    code: roomCode,
-    team_name: teamName,
-    host_id: userId,
-    mode: 'team',
-    started: false
-  })
+    //  Save to Supabase
+    const { error: roomError } = await supabase.from('rooms').insert({
+      id: roomId, // Using the stored UUID
+      code: roomCode,
+      team_name: teamName,
+      host_id: userId,
+      mode: 'team',
+      started: false
+    })
 
-  const { error: playerError } = await supabase.from('players').insert({
-    user_id: userId,
-    name: hostName,
-    room_id: roomId, // Using roomId (UUID) instead of roomCode
-    team_id: 'teamA', // default team
-    is_host: true,
-  })
+    const { error: playerError } = await supabase.from('players').insert({
+      user_id: userId,
+      name: hostName,
+      room_id: roomId, // Using roomId (UUID) instead of roomCode
+      team_id: teamName, // default team
+      is_host: true,
+    })
 
-  if (roomError || playerError) {
-    console.error(roomError || playerError)
-    alert('Failed to create room or player.')
-    return
-  }
+    if (roomError || playerError) {
+      console.error(roomError || playerError)
+      alert('Failed to create room or player.')
+      return
+    }
 
-  // 2. Save to Zustand
-  usePlayerStore.getState().setPlayer({
-    userId,
-    name: hostName,
-    roomId,
-    teamId: 'teamA',
-    isHost: true,
-  })
+    // Save to Zustand
+    usePlayerStore.getState().setPlayer({
+      userId,
+      name: hostName,
+      roomId,
+      teamId: teamName,
+      isHost: true,
+    })
 
-  // 3. Navigate to Lobby
-  router.push(`/waitingRoom/${roomCode}`)
+    // Navigate to Lobby
+    router.push(`/waitingRoom/${roomCode}`);
 }
+if (!hasHydrated){
+    return (
+      <View style={{alignItems:'center', justifyContent:'center'}}>
+        <ActivityIndicator size={'large'} color={'#007AFF'}/>
+      </View>
+    );
+  } 
   return (
     <View style={styles.container}>
       <View style={styles.title}>
@@ -74,7 +83,8 @@ const CreateTeamScreen = (props: Props) => {
         </View>
         <TextField placeHolder="Team's Name" value={teamName} onChangeText={setTeamName} />
         <TextField placeHolder="Host Player's Name" value={hostName} onChangeText={setHostName} />
-        <ActionButton title='Create Team' onPress={handleCreateTeam} />
+
+        <ActionButton title='Create Team' onPress={handleCreateTeam} disabled={!validForm}  buttonStyle={{opacity: validForm ? 1 : 0.5}}/>
       </View>
     </View>
   )

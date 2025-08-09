@@ -36,7 +36,7 @@ const categoryTable = [
     },
     {
         id: 8,
-        name: 'Goegraphy',
+        name: 'Geography',
         picture: require('../assets/images/goegraphy.png'),
     }
 ]

@@ -1,17 +1,17 @@
 import categoryTable from '@/constants/categoryTable';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
-import CategoryCard from '../../components/ui/CartegoryCard';
+import CategoryCard from '../../components/ui/CategoryCard';
 import { fetchCategoryWords } from '../../services/api';
 import { useGameStore } from '../../store/useGameStore';
-
 
 
 const Category = () => {
   const router = useRouter();
   const { setSelectedCategory, setCategoryWords, selectedCategory } = useGameStore();
+  const hasSetWord = useRef(false)
 
   // Fetch words for the selected category
   const { data: categoryWords, isLoading, error } = useQuery({
@@ -25,24 +25,26 @@ const Category = () => {
 
   // Set category words in store when data is fetched
   React.useEffect(() => {
-    if (categoryWords) {
+    if (categoryWords && !hasSetWord.current) {
       setCategoryWords(categoryWords);
+      console.log("Setting categoryWords:", categoryWords.length);
+      hasSetWord.current = true;
+      router.push('/timer');
     }
-  }, [categoryWords, setCategoryWords]);
+  }, [categoryWords,setCategoryWords]);
 
-  const handleCategorySelect = (categoryName: string) => {
+  const handleCategorySelect = useCallback((categoryName: string) => {
     // Reset any previous selection if clicking the same category
     if (selectedCategory === categoryName.toLowerCase()) {
       setSelectedCategory(null);
+      console.log('Reset category selection');
     } else {
-      const normalizedName = categoryName.toLowerCase();
-      // Handle "Animals" -> "animal" conversion
-      const apiEndpoint = normalizedName === "animals" ? "animal" : normalizedName;
-      setSelectedCategory(apiEndpoint);
-      console.log('Selected category:', apiEndpoint); // Debug log
+      const normalizedName = categoryName.toLowerCase();    
+      setSelectedCategory(normalizedName);
+      // console.log('Selected category:', normalizedName); // Debug log
+      //  router.push('/timer');
     }
-    router.push('/timer');
-  };
+  }, [setSelectedCategory])
 
   if (error) {
     console.error('Error details:', error); // Debug log
@@ -64,21 +66,24 @@ const Category = () => {
           scrollEnabled={true} 
           contentContainerStyle={styles.flatlist} 
           showsVerticalScrollIndicator={false} 
+          initialNumToRender={4}
+          removeClippedSubviews={true}
           data={categoryTable} 
-          renderItem={({item}) => (
+          renderItem={useCallback(({item}:any)=>(
             <CategoryCard 
               img={item.picture} 
               text={item.name}
               onPress={() => handleCategorySelect(item.name)}
             />
-          )} 
+          ),[handleCategorySelect])}
         />
+
         {isLoading && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         )}
-        
+          
       </View>
 
     </View>
@@ -100,23 +105,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    // btn:{
-    //     width: 150,
-    //     ...Platform.select({
-    //         ios: {
-    //             shadowColor: '#000',
-    //             shadowOffset: { width: 0, height: 2 },
-    //             shadowOpacity: 0.3,
-    //             shadowRadius: 4,
-    //         },
-    //         android: {
-    //             elevation: 4,
-    //         },
-    //         web: {
-    //             boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-    //         },
-    //     }),
-    // },
     loadingOverlay: {
         position: 'absolute',
         top: 0,

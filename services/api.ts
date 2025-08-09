@@ -2,13 +2,13 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 
 const getBaseUrl = () => {
-  const IP = process.env.MY_IP;
+  const {MY_IP} = process.env;
   if (Platform.OS === 'android') {
     // For Android emulator
-    return `http://${IP}:3000`;
+    return `http://192.168.0.135:3000`;
   } else if (Platform.OS === 'ios') {
     // For iOS simulator
-    return `http://${IP}:3000`;
+    return `http://192.168.0.135:3000`;
   } else {
     // For web or other platforms
     return 'http://localhost:3000';
@@ -29,7 +29,7 @@ export interface Category {
 export const fetchCategoryWords = async (category: string): Promise<Category[]> => {
   try {
     // Convert category name to match db.json endpoints
-    const endpoint = category.toLowerCase().replace('animals', 'animal');
+    const endpoint = category.toLowerCase()
     const { data } = await api.get(`/${endpoint}`);
     console.log('Fetched category words:', data);
     

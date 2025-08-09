@@ -15,7 +15,7 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({
   disabled = false 
 }) => {
   const backgroundColor = color === 'green' ? '#34C759' : '#FF3B30';
-  // const arrowSymbol = direction === 'up' ? '↑' : '↓';
+
   
   return (
     <Pressable
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#ffffff',
   },
 });
 

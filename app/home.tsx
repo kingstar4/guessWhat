@@ -1,8 +1,10 @@
 import NavigateButton from '@/components/ui/NavigateButton'
+import { usePortraitLock } from '@/hooks/usePortrait'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 const Home = () => {
+  usePortraitLock();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose Game Mode</Text>

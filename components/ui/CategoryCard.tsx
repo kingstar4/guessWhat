@@ -7,7 +7,7 @@ type Props = {
     onPress?: () => void;
 }
 
-const CartegoryCard = ({img, text, onPress}: Props) => {
+const CategoryCard = ({img, text, onPress}: Props) => {
   return (
     <Pressable style={styles.cardContainer} onPress={onPress}>
       <View style={styles.cardImg}>
@@ -20,7 +20,7 @@ const CartegoryCard = ({img, text, onPress}: Props) => {
   )
 }
 
-export default CartegoryCard;
+export default CategoryCard;
 
 const styles = StyleSheet.create({
     cardContainer: {
