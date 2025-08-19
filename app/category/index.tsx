@@ -1,50 +1,57 @@
 import categoryTable from '@/constants/categoryTable';
-import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'expo-router';
-import React, { useCallback, useRef } from 'react';
+import { useBack } from '@/hooks/useBack';
+import { useWordBank } from '@/hooks/useWordBank';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import CategoryCard from '../../components/ui/CategoryCard';
-import { fetchCategoryWords } from '../../services/api';
 import { useGameStore } from '../../store/useGameStore';
 
 
 const Category = () => {
   const router = useRouter();
   const { setSelectedCategory, setCategoryWords, selectedCategory } = useGameStore();
-  const hasSetWord = useRef(false)
-
-  // Fetch words for the selected category
-  const { data: categoryWords, isLoading, error } = useQuery({
-    queryKey: ['categoryWords', selectedCategory],
-    queryFn: () => {
-       if (!selectedCategory) throw new Error('No category selected');
-        return fetchCategoryWords(selectedCategory);
-  },
-    enabled: !!selectedCategory, // Only fetch when a category is selected
-  });
+  const hasSetWord = useRef(false);
+  const {words, isLoading, error}= useWordBank({ autoSync:true, mergeStrategy: 'replace'});
+  useBack('/home');
+  // Reset the ref when the screen comes back into focus (e.g., navigating back from timer)
+  useFocusEffect(
+    useCallback(() => {
+      // Reset the ref when the screen is focused
+      hasSetWord.current = false;
+      console.log('Category screen focused, reset hasSetWord');
+    }, [])
+  );
 
   // Set category words in store when data is fetched
-  React.useEffect(() => {
-    if (categoryWords && !hasSetWord.current) {
+  useEffect(() => {
+
+    setSelectedCategory(null);
+    if (selectedCategory && words && !hasSetWord.current) {
+      const categoryWords = words[selectedCategory] || [];
       setCategoryWords(categoryWords);
-      console.log("Setting categoryWords:", categoryWords.length);
+      console.log("Setting categoryWords for", selectedCategory, ":", categoryWords.length, "words");
       hasSetWord.current = true;
       router.push('/timer');
     }
-  }, [categoryWords,setCategoryWords]);
+  }, [selectedCategory, words, setCategoryWords, router, setSelectedCategory]);
 
   const handleCategorySelect = useCallback((categoryName: string) => {
+  
+    const normalize = categoryName.toLowerCase();
+    
     // Reset any previous selection if clicking the same category
-    if (selectedCategory === categoryName.toLowerCase()) {
+    if (selectedCategory === normalize) {
       setSelectedCategory(null);
+      hasSetWord.current = false;
       console.log('Reset category selection');
     } else {
-      const normalizedName = categoryName.toLowerCase();    
-      setSelectedCategory(normalizedName);
-      // console.log('Selected category:', normalizedName); // Debug log
-      //  router.push('/timer');
+      // Reset the ref when selecting a new category
+      hasSetWord.current = false;
+      setSelectedCategory(normalize);
+      console.log('Selected category:', normalize);
     }
-  }, [setSelectedCategory])
+  }, [selectedCategory, setSelectedCategory])
 
   if (error) {
     console.error('Error details:', error); // Debug log
@@ -59,7 +66,7 @@ const Category = () => {
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 1}}>  
+      <View style={{flex: 1, paddingBottom:30, marginBottom: 10}}>  
         <FlatList 
           keyExtractor={(item)=> item.id.toString()} 
           numColumns={2} 
@@ -69,18 +76,19 @@ const Category = () => {
           initialNumToRender={4}
           removeClippedSubviews={true}
           data={categoryTable} 
-          renderItem={useCallback(({item}:any)=>(
+          renderItem={({item}:any)=>(
             <CategoryCard 
               img={item.picture} 
               text={item.name}
               onPress={() => handleCategorySelect(item.name)}
             />
-          ),[handleCategorySelect])}
+          )}
         />
 
         {isLoading && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={{fontWeight:'bold'}}>Loading Categories...</Text>
           </View>
         )}
           
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(255,255,255,0.8)',
+        backgroundColor: 'rgb(255,255,255)',
         justifyContent: 'center',
         alignItems: 'center',
     },

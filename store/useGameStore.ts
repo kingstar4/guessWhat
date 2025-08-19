@@ -64,7 +64,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   
   setSelectedCategory: (category: string | null) => {
-    console.log('Setting selectedCategory:', category);
+    // console.log('Setting selectedCategory:', category);
     set({ selectedCategory: category });
   },
   

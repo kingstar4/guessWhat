@@ -1,14 +1,15 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import { ResizeMode, Video } from 'expo-av';
 import { useRouter } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import React, { useEffect, useState } from 'react';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 import { GameControls } from '../components/ui/ArrowButton';
 import { useGameStore } from '../store/useGameStore';
 import shuffleArray from '../utils/shuffle';
 
 type GameStatus = 'loading' | 'running' | 'ended';
+
 
 const GameRoom = () => {
   const router = useRouter();
@@ -24,7 +25,8 @@ const GameRoom = () => {
     getCorrectCount,
     getWrongCount,
     hasMoreWords,
-    isGameActive
+    isGameActive,
+    setSelectedCategory,
   } = useGameStore();
   
   const [timeLeft, setTimeLeft] = useState(selectedTime || 0);
@@ -72,8 +74,13 @@ const GameRoom = () => {
     // Explicitly switch back to portrait
   ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
   };
-  }, []);
+  },[]);
 
+  const handlePlayAgain = () =>{
+    setSelectedCategory(null);
+    router.push('/category');
+    console.log("Reset Category");
+  }
   // Handle game end (UI + navigation)
   useEffect(() => {
     if (gameStatus === 'ended') {
@@ -88,18 +95,18 @@ const GameRoom = () => {
         [
           {
             text: 'Play Again',
-            onPress: () => router.replace('/category')
+            onPress: handlePlayAgain
           },
           {
             text: 'View Results',
-            onPress: () => router.navigate('/result')
+            onPress: () => router.replace('/result')
           }
         ]
       );
     }
   }, [gameStatus]);
 
-  const handleAnswer = (isCorrect: boolean) => {
+  const handleAnswer = useCallback((isCorrect: boolean) => {
     const currentWord = getCurrentWord();
     if (!currentWord) return;
 
@@ -111,7 +118,14 @@ const GameRoom = () => {
     } else {
       setGameStatus('ended');
     }
-  };
+  },[]);
+
+  const localSource = require('../assets/videos/game.mp4');
+  const player= useVideoPlayer(localSource, (player)=>{
+    player.loop= true;
+    player.play();
+    player.muted= true;
+  })
 
   // Loading state
   if (gameStatus === 'loading') {
@@ -134,15 +148,7 @@ const GameRoom = () => {
 
   return (
       <View style={styles.container}>
-        <Video
-          shouldPlay= {true}
-          isLooping= {true}
-          source={require('../assets/videos/game.mp4')}
-          resizeMode={ResizeMode.COVER}
-          style={styles.video}
-          isMuted={true}
-          useNativeControls={false}
-        />
+        <VideoView player={player} allowsFullscreen style={styles.video} contentFit='cover' nativeControls={false}/>
         <View style={styles.overlay}/>
         <View style={styles.contentContainer}>
         {/* Timer and Score */}
@@ -193,15 +199,14 @@ export default GameRoom;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingVertical: 0,
+    // backgroundColor: '#fff',
+    paddingVertical:0,
     paddingHorizontal: 20,
   },
   contentContainer:{
     flex:1,
     zIndex:2,
     padding:10,
-
   },
   overlay:{
     ...StyleSheet.absoluteFillObject,
@@ -321,7 +326,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   controlsSection: {
-    paddingBottom: 20,
+    paddingBottom: 30,
     zIndex:3,
   },
   video:{
@@ -329,6 +334,6 @@ const styles = StyleSheet.create({
    top:0,
    bottom:0,
    left:0,
-   right:0
+   right:0, 
   }
 });

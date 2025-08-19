@@ -1,16 +1,33 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { QueryProvider } from '../providers/QueryProvider';
+import { ThemeProvider, useTheme } from '../providers/ThemeProvider';
 
-
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+function RootLayoutContent() {
+  const { colorScheme } = useTheme();
+  
+  return (
+    <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="home" options={{ headerShown: false }} />
+        <Stack.Screen name="teamMode" options={{headerTitle: 'Team Mode'}} />
+        <Stack.Screen name="category/index" options={{ headerTitle: 'Categories'}} />
+        <Stack.Screen name="timer" options={{  headerShown: false}}/>
+        <Stack.Screen name="countdown" options={{  headerShown: false}}/>
+        <Stack.Screen name="gameRoom" options={{  headerShown: false}}/>
+        <Stack.Screen name="result/index" options={{  headerShown: false}}/>
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+    </NavigationThemeProvider>
+  );
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -22,18 +39,8 @@ export default function RootLayout() {
 
   return (
     <QueryProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="home" options={{ headerShown: false }} />
-            <Stack.Screen name="teamMode" options={{headerTitle: 'Team Mode'}} />
-            <Stack.Screen name="category/index" options={{ headerTitle: 'Categories'}} />
-            <Stack.Screen name="gameRoom" options={{  headerShown: false}}/>
-            <Stack.Screen name="result/index" options={{  headerShown: false}}/>
-            <Stack.Screen name="+not-found" />
-          </Stack>
-          <StatusBar style="auto" />
+      <ThemeProvider>
+        <RootLayoutContent />
       </ThemeProvider>
     </QueryProvider>
   );

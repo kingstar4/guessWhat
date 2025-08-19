@@ -3,11 +3,14 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Animated, StyleSheet, Text, View } from 'react-native';
 
+
 export default function Index() {
   const router = useRouter()
   const [opacity] = useState(new Animated.Value(1))
   const [isLoading, setLoading]= useState(false);
-
+  
+  
+ 
   useEffect(() => {
     let isActive = true;
 
@@ -42,8 +45,8 @@ export default function Index() {
       {isLoading &&
         (
           <View style={{flex:1, alignItems:'center', justifyContent:'center', gap:10}}>
-            <ActivityIndicator size={50} color={'#007AFF'}/>
-            <Text style={styles.text}>Loading...</Text>
+            <ActivityIndicator size={50} color="#007AFF"/>
+            <Text style={[styles.text]}>Loading...</Text>
           </View>
         )
       }
@@ -57,11 +60,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
   },
   text: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#eaeef1ff',
+    // Remove hardcoded color, now using theme
   }
 })

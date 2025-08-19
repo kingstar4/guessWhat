@@ -150,7 +150,7 @@ export default function LobbyScreen() {
         unsubscribe();
       }
     };
-  }, [userId, roomId]);
+  }, [userId, roomId, ]);
 
   /**
    * Starts (heartbeat or live update) and cleanup loop once the room and userId are ready.

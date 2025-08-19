@@ -29,7 +29,7 @@ export default function NavigateButton({ title, to, buttonStyle, textStyle }: Na
 
 const styles = StyleSheet.create({
   button: {
-    // width:340,
+    width:20,
     // height:48,
     padding: 20,
     backgroundColor: '#007AFF',
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
         android: {
           elevation: 5,
         },
-        web: {
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        default: {
+          boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
         },
       }),
   },

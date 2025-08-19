@@ -1,11 +1,13 @@
+import { useBack } from '@/hooks/useBack';
 import { usePortraitLock } from '@/hooks/usePortrait';
 import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useGameStore } from '../../store/useGameStore';
 
 const GameResults = () => {
-  
+  useBack();
   usePortraitLock();
   const router = useRouter();
   const { 
@@ -55,6 +57,8 @@ const GameResults = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <StatusBar hidden={true}/>
+      
       <View style={styles.header}>
         <Text style={styles.title}>Game Results</Text>
         <Text style={styles.category}>{selectedCategory?.toUpperCase()}</Text>

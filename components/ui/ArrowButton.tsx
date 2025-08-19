@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
       android: {
         elevation: 6,
       },
-      web: {
-        boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+      default: {
+        boxShadow: '0 3px 6px rgba(0,0,0,0.3)',
       },
     }),
   },
@@ -107,7 +107,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 40,
-    paddingVertical: 20,
+    ...Platform.select({
+      android:{
+        // paddingVertical: 20,
+        marginBottom: 30,
+      },
+      ios:{
+        paddingVertical:20,
+      }
+    })
   },
   buttonContainer: {
     alignItems: 'center',

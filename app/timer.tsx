@@ -1,6 +1,7 @@
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import ActionButton from '../components/ui/ActionButton';
 import { useGameStore } from '../store/useGameStore';
 
@@ -11,6 +12,7 @@ const TIME_OPTIONS = [
 ];
 
 const Timer = () => {
+  const [loading, setLoading]= useState(false);
   const router = useRouter();
   const { setSelectedTime, selectedTime } = useGameStore();
 
@@ -19,13 +21,18 @@ const Timer = () => {
   };
 
   const handleContinue = () => {
+    setLoading(true);
     if (selectedTime) {
-      router.push('/gameRoom');
+      setLoading(false);
+      router.push('/countdown');
     }
   };
 
+  
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/images/gamepic3.jpg')} priority={'high'} contentFit='cover' style={{position:'absolute', top:0, bottom:0, left:0, right:0}}/>
+      <View style={styles.overlay}/>
       <Text style={styles.title}>Select Time Frame</Text>
       <View style={styles.optionsContainer}>
         {TIME_OPTIONS.map((option) => (
@@ -47,7 +54,6 @@ const Timer = () => {
         ))}
       </View>
       <View style={styles.bottomContainer}>
-        
         <ActionButton buttonStyle={{
             ...styles.continueButton,
             opacity: !selectedTime ? 0.5 : 1,
@@ -56,6 +62,12 @@ const Timer = () => {
           onPress={handleContinue}
         />
       </View>
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size={40} color="#0000ff" />
+          
+        </View>
+      )}
     </View>
   );
 };
@@ -69,16 +81,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  overlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(0, 0, 0, 0.4)', // darkens the background
+},
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 40,
     textAlign: 'center',
+    color:'#ffffff',
   },
   optionsContainer: {
     width: '100%',
     gap: 20,
     marginBottom: 40,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgb(255,255,255)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   timeButton: {
     backgroundColor: '#f0f0f0',
@@ -95,8 +122,8 @@ const styles = StyleSheet.create({
       android: {
         elevation: 5,
       },
-      web: {
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      default: {
+        boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
       },
     }),
   },
@@ -129,8 +156,8 @@ const styles = StyleSheet.create({
       android: {
         elevation: 4,
       },
-      web: {
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+      default: {
+        boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
       },
     }),
   },

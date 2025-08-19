@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Platform } from 'react-native';
 
 const getBaseUrl = () => {
-  const {MY_IP} = process.env;
+  
   if (Platform.OS === 'android') {
     // For Android emulator
     return `http://192.168.0.135:3000`;
