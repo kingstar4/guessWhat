@@ -6,6 +6,8 @@ import { StyleSheet, View } from 'react-native';
 
 const Home = () => {
   usePortraitLock();
+  
+
   return (
     <View style={styles.container}>
       <Image source={require('../assets/images/gamepic2.jpg')} priority={'high'} contentFit='cover' style={{position:'absolute', top:0, bottom:0, left:0, right:0}}/>

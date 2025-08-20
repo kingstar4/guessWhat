@@ -1,3 +1,4 @@
+import { useSoundStore } from '@/store/useSoundStore';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -15,14 +16,17 @@ const Timer = () => {
   const [loading, setLoading]= useState(false);
   const router = useRouter();
   const { setSelectedTime, selectedTime } = useGameStore();
+  const playEffect = useSoundStore((s)=> s.playEffect);
 
   const handleTimeSelect = (seconds: number) => {
+    playEffect('click');
     setSelectedTime(seconds);
   };
 
   const handleContinue = () => {
     setLoading(true);
     if (selectedTime) {
+      playEffect('click');
       setLoading(false);
       router.push('/countdown');
     }

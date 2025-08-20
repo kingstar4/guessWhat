@@ -1,0 +1,34 @@
+{
+  "episode": "The Curious Village - Ep1",
+  "style": "3D cartoon animated style, bright saturated colors, soft global illumination, expressive faces",
+  "scenes": [
+    {
+      "id": "3b",
+      "style": "3D cartoon animated style",
+      "scene_description": "Still in the attic, the three gather closely around the old map, their faces glowing with excitement and wonder.",
+      "characters": [
+        {
+          "name": "Zara",
+          "reference_image": "zara_ref.png",
+          "appearance": "8-year-old girl with braided hair, bright eyes, wearing a colorful patterned dress, rendered in 3D cartoon style",
+          "action": "holding the map open for everyone to see"
+        },
+        {
+          "name": "Benji",
+          "reference_image": "benji_ref.png",
+          "appearance": "9-year-old boy with short curly hair, playful expression, wearing a striped shirt, rendered in 3D cartoon style",
+          "action": "grinning as he points at the parchment map",
+          "dialogue": "Yeah! Maybe there are more symbols waiting for us!"
+        },
+        { 
+        "name": "Grandma Nia", "reference_image": "grandma_nia_ref.png", 
+        "appearance": "elderly woman with silver hair tied in a scarf, wearing traditional patterned clothing, rendered in 3D cartoon style", 
+        "action": "sitting in a chair, holding the map with care", 
+       "dialogue": "Remember, children… the map will guide you, but your hearts must stay curious." 
+    }
+
+      ],
+      "camera": "close-up of the group huddled around the map, shifting focus from Benji’s grin to Grandma’s wise gaze"
+    }
+]
+}

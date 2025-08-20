@@ -1,6 +1,7 @@
 import categoryTable from '@/constants/categoryTable';
 import { useBack } from '@/hooks/useBack';
 import { useWordBank } from '@/hooks/useWordBank';
+import { useSoundStore } from '@/store/useSoundStore';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
@@ -13,6 +14,8 @@ const Category = () => {
   const { setSelectedCategory, setCategoryWords, selectedCategory } = useGameStore();
   const hasSetWord = useRef(false);
   const {words, isLoading, error}= useWordBank({ autoSync:true, mergeStrategy: 'replace'});
+  const playEffect = useSoundStore((s)=> s.playEffect);
+
   useBack('/home');
   // Reset the ref when the screen comes back into focus (e.g., navigating back from timer)
   useFocusEffect(
@@ -37,7 +40,8 @@ const Category = () => {
   }, [selectedCategory, words, setCategoryWords, router, setSelectedCategory]);
 
   const handleCategorySelect = useCallback((categoryName: string) => {
-  
+    
+    playEffect('click');
     const normalize = categoryName.toLowerCase();
     
     // Reset any previous selection if clicking the same category
@@ -51,7 +55,7 @@ const Category = () => {
       setSelectedCategory(normalize);
       console.log('Selected category:', normalize);
     }
-  }, [selectedCategory, setSelectedCategory])
+  }, [selectedCategory, setSelectedCategory, playEffect]);
 
   if (error) {
     console.error('Error details:', error); // Debug log

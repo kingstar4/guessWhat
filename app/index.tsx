@@ -1,14 +1,14 @@
+import { useSoundStore } from '@/store/useSoundStore';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Animated, StyleSheet, Text, View } from 'react-native';
 
-
 export default function Index() {
   const router = useRouter()
   const [opacity] = useState(new Animated.Value(1))
   const [isLoading, setLoading]= useState(false);
-  
+  const playMusic = useSoundStore((s) => s.playMusic);
   
  
   useEffect(() => {
@@ -26,9 +26,11 @@ export default function Index() {
         if (isActive) {
           setLoading(false);
           router.replace('/home');
+          playMusic();
         }
       })
     }, 3000)
+   
 
      
     return () => {
@@ -36,7 +38,7 @@ export default function Index() {
       clearTimeout(timer);
     }
    
-  }, [router, opacity])
+  }, [router, opacity,playMusic])
 
   return (
     <Animated.View style={[styles.container, { opacity }]}>

@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 import { GameControls } from '../components/ui/ArrowButton';
 import { useGameStore } from '../store/useGameStore';
+import { useSoundStore } from '../store/useSoundStore';
 import shuffleArray from '../utils/shuffle';
 
 type GameStatus = 'loading' | 'running' | 'ended';
@@ -28,6 +29,8 @@ const GameRoom = () => {
     isGameActive,
     setSelectedCategory,
   } = useGameStore();
+  
+  const { playEffect } = useSoundStore();
   
   const [timeLeft, setTimeLeft] = useState(selectedTime || 0);
   const [gameStatus, setGameStatus] = useState<GameStatus>('loading');
@@ -85,6 +88,9 @@ const GameRoom = () => {
   useEffect(() => {
     if (gameStatus === 'ended') {
       endGame();
+      
+      // Play timeup sound when game ends
+      playEffect('timeup');
 
       const correctCount = getCorrectCount();
       const wrongCount = getWrongCount();
@@ -104,21 +110,27 @@ const GameRoom = () => {
         ]
       );
     }
-  }, [gameStatus]);
+  }, [gameStatus, playEffect]);
 
   const handleAnswer = useCallback((isCorrect: boolean) => {
     const currentWord = getCurrentWord();
     if (!currentWord) return;
 
-    if (isCorrect) addCorrectAnswer(currentWord);
-    else addWrongAnswer(currentWord);
+    // Play appropriate sound effect
+    if (isCorrect) {
+      playEffect('success');
+      addCorrectAnswer(currentWord);
+    } else {
+      playEffect('wrong');
+      addWrongAnswer(currentWord);
+    }
 
     if (hasMoreWords()) {
       nextWord();
     } else {
       setGameStatus('ended');
     }
-  },[]);
+  },[playEffect, getCurrentWord, addCorrectAnswer, addWrongAnswer, hasMoreWords, nextWord]);
 
   const localSource = require('../assets/videos/game.mp4');
   const player= useVideoPlayer(localSource, (player)=>{

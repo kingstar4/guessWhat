@@ -1,4 +1,5 @@
 
+import { useSoundStore } from '@/store/useSoundStore';
 import { Href, useRouter } from 'expo-router';
 import { Platform, Pressable, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
 
@@ -11,10 +12,11 @@ type NavigateButtonProps = {
 
 export default function NavigateButton({ title, to, buttonStyle, textStyle }: NavigateButtonProps) {
   const router = useRouter();
+  const playEffect = useSoundStore((s)=> s.playEffect);
 
   const handlePress = ()=>{
-    router.push(to)
-    
+      router.push(to);
+      playEffect('click');
   }
 
   return (

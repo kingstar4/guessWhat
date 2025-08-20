@@ -1,3 +1,4 @@
+import SettingsButton from '@/components/ui/SettingsButton';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -20,9 +21,12 @@ function RootLayoutContent() {
         <Stack.Screen name="countdown" options={{  headerShown: false}}/>
         <Stack.Screen name="gameRoom" options={{  headerShown: false}}/>
         <Stack.Screen name="result/index" options={{  headerShown: false}}/>
+        <Stack.Screen name="settings/index" options={{ headerTitle: 'Settings' }} />
+        <Stack.Screen name="settings/howToPlay" options={{ headerTitle: 'How to Play' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <SettingsButton/>
     </NavigationThemeProvider>
   );
 }
