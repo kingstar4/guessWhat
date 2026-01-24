@@ -9,9 +9,7 @@ import { supabase } from '../lib/supabase';
 
 
 
-type Props = {}
-
-const CreateTeamScreen = (props: Props) => {
+const CreateTeamScreen = () => {
   const [teamName, setTeamName] = useState('');
   const [hostName, setHostName] = useState('');
   const [roomCode] = useState(() => uuid.v4().slice(0, 6).toUpperCase());
@@ -121,6 +119,5 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     paddingHorizontal: 20,
-    // gap: 10,
   }
 })

@@ -9,24 +9,24 @@ import { ThemeProvider, useTheme } from '../providers/ThemeProvider';
 
 function RootLayoutContent() {
   const { colorScheme } = useTheme();
-  
+
   return (
     <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="home" options={{ headerShown: false }} />
-        <Stack.Screen name="teamMode" options={{headerTitle: 'Team Mode'}} />
-        <Stack.Screen name="category/index" options={{ headerTitle: 'Categories'}} />
-        <Stack.Screen name="timer" options={{  headerShown: false}}/>
-        <Stack.Screen name="countdown" options={{  headerShown: false}}/>
-        <Stack.Screen name="gameRoom" options={{  headerShown: false}}/>
-        <Stack.Screen name="result/index" options={{  headerShown: false}}/>
-        <Stack.Screen name="settings/index" options={{ headerTitle: 'Settings' }} />
-        <Stack.Screen name="settings/howToPlay" options={{ headerTitle: 'How to Play' }} />
+        <Stack.Screen name="teamMode" options={{ headerTitle: 'Team Mode' }} />
+        <Stack.Screen name="category/index" options={{ headerShown: false }} />
+        <Stack.Screen name="timer" options={{ headerShown: false }} />
+        <Stack.Screen name="countdown" options={{ headerShown: false }} />
+        <Stack.Screen name="gameRoom" options={{ headerShown: false }} />
+        <Stack.Screen name="result/index" options={{ headerShown: false }} />
+        <Stack.Screen name="settings/index" options={{ headerShown: false }} />
+        <Stack.Screen name="settings/howToPlay" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <SettingsButton/>
+      <SettingsButton />
     </NavigationThemeProvider>
   );
 }

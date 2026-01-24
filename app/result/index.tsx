@@ -1,29 +1,33 @@
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { borderRadius, colors, spacing, typography } from '@/constants/designTokens';
 import { useBack } from '@/hooks/useBack';
 import { usePortraitLock } from '@/hooks/usePortrait';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useGameStore } from '../../store/useGameStore';
 
 const GameResults = () => {
   useBack();
   usePortraitLock();
   const router = useRouter();
-  const { 
-    correctAnswers, 
-    wrongAnswers, 
+  const {
+    correctAnswers,
+    wrongAnswers,
     selectedCategory,
     gameStartTime,
     gameEndTime,
-    resetGame 
+    resetGame
   } = useGameStore();
 
   const totalQuestions = correctAnswers.length + wrongAnswers.length;
   const accuracy = totalQuestions > 0 ? (correctAnswers.length / totalQuestions * 100).toFixed(1) : 0;
-  const gameDuration = gameStartTime && gameEndTime ? 
+  const gameDuration = gameStartTime && gameEndTime ?
     Math.round((gameEndTime - gameStartTime) / 1000) : 0;
-
 
   const handlePlayAgain = () => {
     resetGame();
@@ -35,20 +39,28 @@ const GameResults = () => {
     router.replace('/home');
   };
 
-  const renderAnswerList = (answers: typeof correctAnswers, title: string, color: string) => (
+  const renderAnswerList = (answers: typeof correctAnswers, title: string, iconName: string, iconColor: string) => (
     <View style={styles.answerSection}>
-      <Text style={[styles.sectionTitle, { color }]}>{title} ({answers.length})</Text>
+      <View style={styles.sectionHeader}>
+        <MaterialIcons name={iconName as any} size={24} color={iconColor} />
+        <Text style={[styles.sectionTitle, { color: iconColor }]}>
+          {title} ({answers.length})
+        </Text>
+      </View>
       {answers.length === 0 ? (
-        <Text style={styles.emptyText}>No {title.toLowerCase()} answers</Text>
+        <Text style={styles.emptyText}>No {title.toLowerCase()}</Text>
       ) : (
         <View style={styles.answerList}>
           {answers.map((answer, index) => (
-            <View key={index} style={[styles.answerItem, { borderColor: color }]}>
-              <Text style={styles.answerTerm}>{answer.word.term}</Text>
-              <Text style={styles.answerTaboo}>
-                Taboo: {answer.word.tabooWords.join(', ')}
-              </Text>
-            </View>
+            <Card key={index} style={styles.answerCard}>
+              <View style={[styles.answerIndicator, { backgroundColor: iconColor }]} />
+              <View style={styles.answerContent}>
+                <Text style={styles.answerTerm}>{answer.word.term}</Text>
+                <Text style={styles.answerTaboo}>
+                  Taboo: {answer.word.tabooWords.join(', ')}
+                </Text>
+              </View>
+            </Card>
           ))}
         </View>
       )}
@@ -57,33 +69,37 @@ const GameResults = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-    <StatusBar hidden={true}/>
-      
+      <StatusBar hidden={true} />
+
       <View style={styles.header}>
+        <MaterialIcons name="emoji-events" size={64} color={colors.primary} />
         <Text style={styles.title}>Game Results</Text>
         <Text style={styles.category}>{selectedCategory?.toUpperCase()}</Text>
       </View>
 
       {/* Score Summary */}
       <View style={styles.summaryContainer}>
-        <View style={styles.scoreCard}>
-          <Text style={styles.scoreNumber}>{correctAnswers.length}</Text>
+        <Card style={styles.scoreCard}>
+          <MaterialIcons name="check-circle" size={32} color={colors.success} />
+          <AnimatedNumber value={correctAnswers.length} style={styles.scoreNumber} />
           <Text style={styles.scoreLabel}>Correct</Text>
-        </View>
-        
-        <View style={styles.scoreCard}>
-          <Text style={styles.scoreNumber}>{wrongAnswers.length}</Text>
+        </Card>
+
+        <Card style={styles.scoreCard}>
+          <MaterialIcons name="cancel" size={32} color={colors.error} />
+          <AnimatedNumber value={wrongAnswers.length} style={styles.scoreNumber} />
           <Text style={styles.scoreLabel}>Wrong</Text>
-        </View>
-        
-        <View style={styles.scoreCard}>
+        </Card>
+
+        <Card style={styles.scoreCard}>
+          <MaterialIcons name="timeline" size={32} color={colors.primary} />
           <Text style={styles.scoreNumber}>{accuracy}%</Text>
           <Text style={styles.scoreLabel}>Accuracy</Text>
-        </View>
+        </Card>
       </View>
 
       {/* Game Stats */}
-      <View style={styles.statsContainer}>
+      <Card style={styles.statsContainer}>
         <View style={styles.statItem}>
           <Text style={styles.statLabel}>Total Questions:</Text>
           <Text style={styles.statValue}>{totalQuestions}</Text>
@@ -98,21 +114,21 @@ const GameResults = () => {
             {gameDuration > 0 ? ((totalQuestions / gameDuration) * 60).toFixed(1) : '0'}
           </Text>
         </View>
-      </View>
+      </Card>
 
       {/* Answer Details */}
-      {renderAnswerList(correctAnswers, 'Correct Answers', '#34C759')}
-      {renderAnswerList(wrongAnswers, 'Wrong Answers', '#FF3B30')}
+      {renderAnswerList(correctAnswers, 'Correct Answers', 'check-circle', colors.success)}
+      {renderAnswerList(wrongAnswers, 'Wrong Answers', 'cancel', colors.error)}
 
       {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        <Pressable style={[styles.button, styles.primaryButton]} onPress={handlePlayAgain}>
-          <Text style={styles.primaryButtonText}>Play Again</Text>
-        </Pressable>
-        
-        <Pressable style={[styles.button, styles.secondaryButton]} onPress={handleBackToHome}>
-          <Text style={styles.secondaryButtonText}>Back to Home</Text>
-        </Pressable>
+        <Button onPress={handlePlayAgain} variant="primary" size="large">
+          Play Again
+        </Button>
+
+        <Button onPress={handleBackToHome} variant="primary" size="large">
+          Back to Home
+        </Button>
       </View>
     </ScrollView>
   );
@@ -123,187 +139,117 @@ export default GameResults;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.background,
   },
   contentContainer: {
-    padding: 20,
-    paddingTop: 60,
+    padding: spacing.lg,
+    paddingTop: spacing['2xl'],
   },
   header: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: spacing.xl,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
   },
   category: {
-    fontSize: 16,
-    color: '#666',
-    fontWeight: '600',
+    fontSize: typography.sizes.base,
+    color: colors.textSecondary,
+    fontWeight: typography.weights.semibold,
+    letterSpacing: 0.5,
   },
   summaryContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 30,
+    marginBottom: spacing.lg,
+    gap: spacing.sm,
   },
   scoreCard: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 15,
+    flex: 1,
     alignItems: 'center',
-    minWidth: 80,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 3,
-      },
-      web: {
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      },
-    }),
+    padding: spacing.base,
   },
   scoreNumber: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginVertical: spacing.xs,
   },
   scoreLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 5,
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
   },
   statsContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 30,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 3,
-      },
-      web: {
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      },
-    }),
+    marginBottom: spacing.lg,
   },
   statItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: colors.border,
   },
   statLabel: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: typography.sizes.base,
+    color: colors.textSecondary,
   },
   statValue: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
   },
   answerSection: {
-    marginBottom: 25,
+    marginBottom: spacing.lg,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    fontSize: typography.sizes.lg,
+    fontWeight: typography.weights.bold,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#999',
+    fontSize: typography.sizes.base,
+    color: colors.textSecondary,
     fontStyle: 'italic',
     textAlign: 'center',
-    padding: 20,
+    padding: spacing.lg,
   },
   answerList: {
-    gap: 10,
+    gap: spacing.sm,
   },
-  answerItem: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    borderLeftWidth: 4,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 2,
-      },
-      web: {
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-      },
-    }),
+  answerCard: {
+    flexDirection: 'row',
+    padding: spacing.base,
+  },
+  answerIndicator: {
+    width: 4,
+    borderRadius: borderRadius.full,
+    marginRight: spacing.md,
+  },
+  answerContent: {
+    flex: 1,
   },
   answerTerm: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
   answerTaboo: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
   },
   buttonContainer: {
-    gap: 15,
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  button: {
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-      web: {
-        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-      },
-    }),
-  },
-  primaryButton: {
-    backgroundColor: '#007AFF',
-  },
-  secondaryButton: {
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    borderColor: '#007AFF',
-  },
-  primaryButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  secondaryButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007AFF',
+    gap: spacing.md,
+    marginTop: spacing.base,
+    marginBottom: spacing.xl,
   },
 });

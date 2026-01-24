@@ -1,64 +1,131 @@
-const categoryTable = [
+export interface CategoryItem {
+    id: number;
+    name: string;
+    icon: string;
+    iconLibrary: 'MaterialIcons' | 'MaterialCommunityIcons' | 'Ionicons';
+    gradient: [string, string];
+    tags: string[];
+    wordCount?: number;
+}
+
+const categoryTable: CategoryItem[] = [
     {
         id: 1,
         name: 'Animals',
-        picture: require('../assets/images/animals.jpg'),
+        icon: 'paw',
+        iconLibrary: 'MaterialCommunityIcons',
+        gradient: ['#4CAF50', '#2E7D32'],
+        tags: ['all', 'kids', 'trending'],
+        wordCount: 30,
     },
     {
         id: 2,
         name: 'Celebrity',
-        picture: require('../assets/images/celebs.jpg'),
+        icon: 'star',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#FF6B9D', '#C2185B'],
+        tags: ['all', 'trending'],
+        wordCount: 30,
     },
     {
         id: 3,
         name: 'Sports',
-        picture: require('../assets/images/sport.jpg'),
+        icon: 'sports-basketball',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#FF9800', '#E65100'],
+        tags: ['all', 'trending'],
+        wordCount: 30,
     },
     {
         id: 4,
         name: 'Country',
-        picture: require('../assets/images/country.jpg'),
+        icon: 'earth',
+        iconLibrary: 'MaterialCommunityIcons',
+        gradient: ['#2196F3', '#0D47A1'],
+        tags: ['all'],
+        wordCount: 30,
     },
     {
         id: 5,
         name: 'Food',
-        picture: require('../assets/images/foods.jpg'),
+        icon: 'restaurant',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#FFC107', '#F57C00'],
+        tags: ['all', 'kids', 'trending'],
+        wordCount: 30,
     },
     {
         id: 6,
         name: 'Music',
-        picture: require('../assets/images/music1.jpg'),
+        icon: 'music-note',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#9C27B0', '#6A1B9A'],
+        tags: ['all', 'trending'],
+        wordCount: 30,
     },
     {
         id: 7,
         name: 'History',
-        picture: require('../assets/images/history1.jpg'),
+        icon: 'history-edu',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#795548', '#4E342E'],
+        tags: ['all'],
+        wordCount: 30,
     },
     {
         id: 8,
         name: 'Action',
-        picture: require('../assets/images/action.jpg'),
+        icon: 'flash-on',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#f97316', '#c2410c'],
+        tags: ['all', 'trending'],
+        wordCount: 30,
     },
     {
         id: 9,
         name: 'Science',
-        picture: require('../assets/images/science.png'),
+        icon: 'science',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#00BCD4', '#00838F'],
+        tags: ['all', 'kids'],
+        wordCount: 30,
     },
     {
         id: 10,
         name: 'Emotion',
-        picture: require('../assets/images/emotion.jpg'),
+        icon: 'mood',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#E91E63', '#AD1457'],
+        tags: ['all', 'kids'],
+        wordCount: 30,
     },
     {
         id: 11,
         name: 'Art',
-        picture: require('../assets/images/art1.jpg'),
+        icon: 'palette',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#673AB7', '#4527A0'],
+        tags: ['all', 'kids'],
+        wordCount: 30,
     },
     {
         id: 12,
-        name: 'Geography',
-        picture: require('../assets/images/geography.jpg'),
+        name: 'Bible',
+        icon: 'book',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#8B4789', '#5E1B5D'],
+        tags: ['all'],
+        wordCount: 30,
     },
-]
+    {
+        id: 13,
+        name: 'Geography',
+        icon: 'map',
+        iconLibrary: 'MaterialIcons',
+        gradient: ['#009688', '#00695C'],
+        tags: ['all'],
+        wordCount: 30,
+    },
+];
 
 export default categoryTable;

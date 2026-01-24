@@ -1,160 +1,70 @@
-import { supabase } from '@/lib/supabase';
-import { UseWordBankOptions, WordDB } from '@/utils/type';
+import { WordDB } from '@/utils/type';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
 import defaultData from '../assets/words.json';
-const STORAGE_KEY= 'headeup:wordbank:v1';
 
-export function useWordBank(opts?: UseWordBankOptions){
-     const { autoSync = true, mergeStrategy = 'replace', onSync } = opts || {};
+const STORAGE_KEY = 'headeup:wordbank:v1';
 
-     const [words, setWords] = useState<WordDB| null>(null);
-     const [isLoading, setIsLoading] = useState(true);
-     const [error, setError] = useState<Error | null>(null);
-     
-    //  To load the default data from 
-     const loadFromBundle = useCallback(async(): Promise<WordDB> =>{
-        return (defaultData as  WordDB) ?? {version: 1}
-     },[]);
+export function useWordBank() {
+  const [words, setWords] = useState<WordDB | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-     const loadFromAsync = useCallback(async(): Promise<WordDB | null> =>{
-        try{
-            const raw = await AsyncStorage.getItem(STORAGE_KEY);
-            return raw ? (JSON.parse(raw) as WordDB): null;
-        }catch(e){
-            console.warn('Failed to load wordbank from cache', e);
-            return null;
-        }
-     },[]);
+  // Load the default data from bundled JSON
+  const loadFromBundle = useCallback(async (): Promise<WordDB> => {
+    return (defaultData as WordDB) ?? { version: 1 }
+  }, []);
 
-    //  Save WordDB to asyncStorage
-     const saveToAsync = useCallback(async(db:WordDB)=>{
-        try{
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-        }
-        catch(e){
-            console.warn('Failed to save wordbank to cache', e);
-        }
-     },[]);
-
-  const fetchRemote = useCallback(async (): Promise<WordDB | null> => {
-      try {
-        // 1. Get meta info
-        const { data: meta, error: metaErr } = await supabase
-          .from('wordbank_meta')
-          .select('*')
-          .single();
-
-        if (metaErr) throw metaErr;
-
-        // 2. Get active categories
-        const { data: categories, error: catErr } = await supabase
-          .from('categories')
-          .select('*')
-          .eq('is_active', true);
-
-        if (catErr) throw catErr;
-
-        // 3. Get active words
-        const { data: words, error: wordErr } = await supabase
-          .from('words')
-          .select('*')
-          .eq('is_active', true);
-
-        if (wordErr) throw wordErr;
-
-        // 4. Transform into WordDB shape
-        const db: WordDB = {
-          version: meta?.version || 1,
-          last_updated: meta?.last_updated || new Date().toISOString(),
-        };
-
-        categories?.forEach(cat => {
-          db[cat.name] = words?.filter(w => w.category_id === cat.id) || [];
-        });
-
-        return db;
-      } catch (e) {
-        console.warn('Supabase fetch failed', e);
-        return null;
-      }
-}, []);
-
-
-     
-  const isServerNewer = useCallback((server?: WordDB | null, local?: WordDB | null) => {
-    if (!server) return false;
-    if (!local) return true;
-
-    if (typeof server.version === 'number' && typeof local.version === 'number') {
-      return server.version > local.version;
+  // Load from AsyncStorage cache
+  const loadFromAsync = useCallback(async (): Promise<WordDB | null> => {
+    try {
+      const raw = await AsyncStorage.getItem(STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as WordDB) : null;
+    } catch (e) {
+      console.warn('Failed to load wordbank from cache', e);
+      return null;
     }
+  }, []);
 
-    if (server.last_updated && local.last_updated) {
-      return new Date(server.last_updated).getTime() > new Date(local.last_updated).getTime();
+  // Save WordDB to AsyncStorage
+  const saveToAsync = useCallback(async (db: WordDB) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(db));
     }
+    catch (e) {
+      console.warn('Failed to save wordbank to cache', e);
+    }
+  }, []);
 
-    return false;
-}, []);
-
-  const mergeDBs = useCallback((local: WordDB, server: WordDB) => {
-    if (!server) return local;
-    if (mergeStrategy === 'replace') return server;
-
-    const merged: WordDB = { ...(local || {}), version: server.version ?? local.version, last_updated: server.last_updated ?? local.last_updated };
-
-    Object.keys(server).forEach((k) => {
-      if (k === 'version' || k === 'last_updated') return;
-      const serverVal = server[k];
-      const localVal = local[k];
-
-      if (Array.isArray(serverVal) && Array.isArray(localVal)) {
-        const map = new Map<any, any>();
-        localVal.forEach((item: any) => map.set(item.id, item));
-        serverVal.forEach((item: any) => map.set(item.id, item));
-        merged[k] = Array.from(map.values());
-      } else {
-        merged[k] = serverVal;
-      }
-    });
-    return merged;
-  }, [mergeStrategy]);
-
-  const refresh = useCallback(async (force = false) => {
+  // Load words from local JSON and cache
+  const refresh = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      let local = await loadFromAsync();
-      if (!local) {
-        local = await loadFromBundle();
-        await saveToAsync(local);
-      }
+      // Try to load from cache first
+      let cached = await loadFromAsync();
 
-      if (!autoSync && !force) {
-        setWords(local);
-        setIsLoading(false);
-        return;
-      }
+      // Load from bundled JSON
+      const bundled = await loadFromBundle();
 
-      const server = await fetchRemote();
-      if (isServerNewer(server, local) || force) {
-        const updated = mergeDBs(local, server ?? local);
-        await saveToAsync(updated);
-        setWords(updated);
-        onSync?.(true);
+      // If cache exists and has same version, use cache
+      // Otherwise use bundled data and update cache
+      if (cached && cached.version === bundled.version) {
+        setWords(cached);
       } else {
-        setWords(local);
-        onSync?.(false);
+        setWords(bundled);
+        await saveToAsync(bundled);
       }
     } catch (e: any) {
       setError(e);
-      const fallback = (await loadFromAsync()) ?? (await loadFromBundle());
+      // Fallback to bundled data
+      const fallback = await loadFromBundle();
       setWords(fallback);
     } finally {
       setIsLoading(false);
     }
-  }, [autoSync, fetchRemote, isServerNewer, loadFromBundle, loadFromAsync, mergeDBs, onSync, saveToAsync]);
+  }, [loadFromBundle, loadFromAsync, saveToAsync]);
 
   useEffect(() => {
     refresh();

@@ -1,61 +1,184 @@
 import NavigateButton from '@/components/ui/NavigateButton';
+import { borderRadius, colors, shadows, spacing, typography } from '@/constants/designTokens';
 import { usePortraitLock } from '@/hooks/usePortrait';
-import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const Home = () => {
   usePortraitLock();
-  
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/gamepic2.jpg')} priority={'high'} contentFit='cover' style={{position:'absolute', top:0, bottom:0, left:0, right:0}}/>
-      <View style={styles.overlay}/>
-      {/* <Text style={styles.title}>Choose Game Mode</Text> */}
-      <View style={styles.buttonContainer}>
-        <NavigateButton 
-          title='Team Mode' 
-          to='/teamMode'
-          buttonStyle={styles.button}
-        />
-        <NavigateButton 
-          title='One-on-One (Single Mode)' 
-          to='/category'
-          buttonStyle={{...styles.button, backgroundColor:'#fe5f28'}}
-        />
-      </View>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
+        <View style={styles.topHeader}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="person-circle-outline" size={32} color={colors.primary} />
+          </TouchableOpacity>
+          <Text style={styles.appTitle}>GuessWhat</Text>
+          <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settings')}>
+            <Ionicons name="settings-outline" size={28} color={colors.text} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Game Lobby Section */}
+        <View style={styles.lobbySection}>
+          <Text style={styles.lobbyLabel}>GAME LOBBY</Text>
+          <Text style={styles.heading}>Choose Game Mode</Text>
+          <Text style={styles.subheading}>Ready to start the fun? Pick your challenge.</Text>
+        </View>
+
+        {/* Game Mode Cards */}
+        <View style={styles.buttonContainer}>
+          <View style={styles.modeCard}>
+            <Text style={styles.modeTitle}>Team Play</Text>
+            <Text style={styles.modeDescription}>
+              Split into groups and compete for the highest score!
+            </Text>
+            <NavigateButton
+              title='Coming Soon'
+              to='/teamMode'
+              variant='primary'
+              disabled={true}
+            />
+          </View>
+
+          <View style={styles.modeCard}>
+            <Text style={styles.modeTitle}>Classic 1v1</Text>
+            <Text style={styles.modeDescription}>
+              Ahead-to-head battle of wits and speed.
+            </Text>
+            <NavigateButton
+              title='Select Mode'
+              to='/category'
+              variant='success'
+            />
+          </View>
+        </View>
+
+      </ScrollView>
     </View>
-  )
-}
+  );
+};
 
 export default Home;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   overlay: {
-  ...StyleSheet.absoluteFillObject,
-  backgroundColor: 'rgba(0, 0, 0, 0.4)', // darkens the background
-},
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color:'#ffffff',
-    zIndex:5,
-    elevation: 5,
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: colors.overlayLight,
+  },
+  scrollView: {
+    flex: 1,
+    zIndex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing['2xl'],
+  },
+  topHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing['2xl'],
+  },
+  iconButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appTitle: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+  },
+  lobbySection: {
+    marginBottom: spacing.xl,
+  },
+  lobbyLabel: {
+    fontSize: typography.sizes.sm,
+    fontWeight: typography.weights.semibold,
+    color: colors.primary,
+    letterSpacing: 1,
+    marginBottom: spacing.sm,
+  },
+  heading: {
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginBottom: spacing.xs,
+  },
+  subheading: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+    lineHeight: typography.lineHeights.relaxed * typography.sizes.base,
   },
   buttonContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-    gap: 20,
+    gap: spacing.lg,
+    marginBottom: spacing.xl,
   },
-  button: {
-    width: '100%',
-  }
-})
+  modeCard: {
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    ...shadows.md,
+  },
+  modeTitle: {
+    fontSize: typography.sizes.xl,
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginBottom: spacing.sm,
+  },
+  modeDescription: {
+    fontSize: typography.sizes.base,
+    color: colors.textSecondary,
+    marginBottom: spacing.base,
+    lineHeight: typography.lineHeights.relaxed * typography.sizes.base,
+  },
+  quickStart: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.base,
+    ...shadows.sm,
+  },
+  quickStartIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.base,
+  },
+  quickStartText: {
+    flex: 1,
+  },
+  quickStartTitle: {
+    fontSize: typography.sizes.base,
+    fontWeight: typography.weights.semibold,
+    color: colors.text,
+    marginBottom: 2,
+  },
+  quickStartSubtitle: {
+    fontSize: typography.sizes.sm,
+    color: colors.textSecondary,
+  },
+});

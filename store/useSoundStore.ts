@@ -1,46 +1,46 @@
 // store/useSoundStore.ts
-import { Audio } from "expo-av";
+import type { AudioPlayer } from "expo-audio";
+import { createAudioPlayer } from "expo-audio";
 import { create } from "zustand";
 
 type SoundState = {
   isSoundOn: boolean;
   toggleSound: () => void;
-  playMusic: () => Promise<void>;
-  stopMusic: () => Promise<void>;
-  playEffect: (effect: "click" | "success" | "wrong" | "timeup") => Promise<void>;
+  playMusic: () => void;
+  stopMusic: () => void;
+  playEffect: (effect: "click" | "success" | "wrong" | "timeup") => void;
 };
 
 export const useSoundStore = create<SoundState>((set, get) => {
-  let backgroundSound: Audio.Sound | null = null;
+  let backgroundPlayer: AudioPlayer | null = null;
 
   return {
     isSoundOn: true,
 
     toggleSound: () => set((s) => ({ isSoundOn: !s.isSoundOn })),
 
-    playMusic: async () => {
+    playMusic: () => {
       if (!get().isSoundOn) return;
 
-      if (backgroundSound) {
-        await backgroundSound.replayAsync();
+      if (backgroundPlayer) {
+        backgroundPlayer.play();
         return;
       }
 
-      const { sound } = await Audio.Sound.createAsync(
-        require("../assets/audio/gamesound.mp3"), 
-        { isLooping: true }
+      backgroundPlayer = createAudioPlayer(
+        require("../assets/audio/gamesound.mp3")
       );
-      backgroundSound = sound;
-      await sound.playAsync();
+      backgroundPlayer.loop = true;
+      backgroundPlayer.play();
     },
 
-    stopMusic: async () => {
-      if (backgroundSound) {
-        await backgroundSound.stopAsync();
+    stopMusic: () => {
+      if (backgroundPlayer) {
+        backgroundPlayer.pause();
       }
     },
 
-    playEffect: async (effect) => {
+    playEffect: (effect) => {
       if (!get().isSoundOn) return;
 
       let file;
@@ -59,15 +59,9 @@ export const useSoundStore = create<SoundState>((set, get) => {
           break;
       }
 
-      const { sound } = await Audio.Sound.createAsync(file);
-      await sound.playAsync();
-      // unload after play
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (!status.isLoaded) return;
-        if (status.didJustFinish) {
-          sound.unloadAsync();
-        }
-      });
+      const player = createAudioPlayer(file);
+      player.play();
+      // Auto-cleanup when finished - player will be garbage collected
     },
   };
 });

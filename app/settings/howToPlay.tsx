@@ -1,5 +1,6 @@
+import { colors } from '@/constants/designTokens';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 
 
@@ -20,7 +21,7 @@ const HowToPlay = () => {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>🎮 How to Play</Text>
-        
+
         <View style={styles.step}>
           <Text style={styles.stepNumber}>1.</Text>
           <View style={styles.stepContent}>
@@ -33,7 +34,7 @@ const HowToPlay = () => {
           <Text style={styles.stepNumber}>2.</Text>
           <View style={styles.stepContent}>
             <Text style={styles.stepTitle}>Set Your Timer</Text>
-            <Text style={styles.stepText}>Choose how long you want to play: 30 seconds, 1 minute, 2 minutes, or 3 minutes.</Text>
+            <Text style={styles.stepText}>Choose how long you want to play: 30 seconds, 60 seconds, 90 seconds, or 120 seconds.</Text>
           </View>
         </View>
 
@@ -56,7 +57,7 @@ const HowToPlay = () => {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>📋 Game Rules</Text>
-        
+
         <View style={styles.rule}>
           <Text style={styles.ruleIcon}>✅</Text>
           <Text style={styles.ruleText}>You CAN use gestures, sounds, and creative descriptions</Text>
@@ -123,9 +124,10 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    marginTop: 20,
     marginBottom: 30,
     paddingVertical: 20,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     borderRadius: 15,
     marginHorizontal: -5,
   },
@@ -147,11 +149,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      },
+    }),
   },
   sectionTitle: {
     fontSize: 20,

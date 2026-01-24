@@ -8,6 +8,7 @@ export const usePortraitLock = () => {
   useEffect(() => {
     // If we're on the GameRoom screen, do not lock to portrait
     if (pathname.includes('/gameRoom')) return;
+    if (pathname.includes('/countdown')) return;
 
     const lock = async () => {
       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);

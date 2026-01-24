@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
       android: {
         elevation: 5,
       },
-      default: {
+      web: {
         boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
       },
     }),

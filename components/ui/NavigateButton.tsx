@@ -1,64 +1,48 @@
+/**
+ * NavigateButton Component
+ * Updated to use new Button component
+ */
 
-import { useSoundStore } from '@/store/useSoundStore';
-import { Href, useRouter } from 'expo-router';
-import { Platform, Pressable, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { ViewStyle } from 'react-native';
+import { Button } from './Button';
 
-type NavigateButtonProps = {
+interface NavigateButtonProps {
   title: string;
-  to: Href; 
+  to: string;
   buttonStyle?: ViewStyle;
-  textStyle?: TextStyle;
-};
-
-export default function NavigateButton({ title, to, buttonStyle, textStyle }: NavigateButtonProps) {
-  const router = useRouter();
-  const playEffect = useSoundStore((s)=> s.playEffect);
-
-  const handlePress = ()=>{
-      router.push(to);
-      playEffect('click');
-  }
-
-  return (
-    <Pressable
-      style={[styles.button, buttonStyle]}
-      onPress={handlePress}
-    >
-      <Text style={[styles.buttonText, textStyle]}>{title}</Text>
-    </Pressable>
-  );
+  variant?: 'primary' | 'success' | 'error' | 'outline' | 'ghost';
+  size?: 'small' | 'medium' | 'large';
+  disabled?: boolean;
 }
 
-const styles = StyleSheet.create({
-  button: {
-    width:20,
-    // height:48,
-    padding: 20,
-    backgroundColor: '#007AFF',
-    borderRadius: 50,
-    alignItems:'center',
-    justifyContent:'center',
-    alignSelf:'center',
-    marginVertical: 20,
-    ...Platform.select({
-        ios: {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-        },
-        android: {
-          elevation: 5,
-        },
-        default: {
-          boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
-        },
-      }),
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+const NavigateButton: React.FC<NavigateButtonProps> = ({
+  title,
+  to,
+  buttonStyle,
+  variant = 'primary',
+  size = 'large',
+  disabled = false,
+}) => {
+  const router = useRouter();
 
+  const handlePress = () => {
+    router.push(to as any);
+  };
+
+  return (
+    <Button
+      onPress={handlePress}
+      variant={variant}
+      size={size}
+      style={buttonStyle}
+      fullWidth
+      disabled={disabled}
+    >
+      {title}
+    </Button>
+  );
+};
+
+export default NavigateButton;

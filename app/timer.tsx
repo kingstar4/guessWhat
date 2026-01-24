@@ -1,79 +1,86 @@
-import { useSoundStore } from '@/store/useSoundStore';
-import { Image } from 'expo-image';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { borderRadius, colors, spacing, typography } from '@/constants/designTokens';
+import { useBack } from '@/hooks/useBack';
+import { useGameStore } from '@/store/useGameStore';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import ActionButton from '../components/ui/ActionButton';
-import { useGameStore } from '../store/useGameStore';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-const TIME_OPTIONS = [
-  { seconds: 30, label: '30 Seconds' },
-  { seconds: 60, label: '60 Seconds' },
-  { seconds: 90, label: '90 Seconds' },
+const timeOptions = [
+  { value: 30, label: '30s', description: 'FAST & HECTIC' },
+  { value: 60, label: '60s', description: 'STANDARD' },
+  { value: 90, label: '90s', description: 'RELAXED' },
+  { value: 120, label: '120s', description: 'PRO' },
 ];
 
 const Timer = () => {
-  const [loading, setLoading]= useState(false);
+  useBack();
   const router = useRouter();
-  const { setSelectedTime, selectedTime } = useGameStore();
-  const playEffect = useSoundStore((s)=> s.playEffect);
+  const { setSelectedTime, selectedCategory } = useGameStore();
+  const [localSelected, setLocalSelected] = useState<number | null>(null);
 
-  const handleTimeSelect = (seconds: number) => {
-    playEffect('click');
-    setSelectedTime(seconds);
+  const handleSelectTime = (value: number) => {
+    setLocalSelected(value);
   };
 
-  const handleContinue = () => {
-    setLoading(true);
-    if (selectedTime) {
-      playEffect('click');
-      setLoading(false);
+  const handleStart = () => {
+    if (localSelected !== null) {
+      setSelectedTime(localSelected);
       router.push('/countdown');
     }
   };
 
-  
-  
   return (
-    <View style={styles.container}>
-      <Image source={require('../assets/images/gamepic3.jpg')} priority={'high'} contentFit='cover' style={{position:'absolute', top:0, bottom:0, left:0, right:0}}/>
-      <View style={styles.overlay}/>
-      <Text style={styles.title}>Select Time Frame</Text>
-      <View style={styles.optionsContainer}>
-        {TIME_OPTIONS.map((option) => (
-          <Pressable
-            key={option.seconds}
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.header}>
+        <View style={styles.iconContainer}>
+          <MaterialIcons name="timer" size={48} color={colors.primary} />
+        </View>
+        <Text style={styles.title}>How long to play?</Text>
+        <Text style={styles.subtitle}>
+          Choose how many seconds each player gets per turn
+        </Text>
+      </View>
+
+      <View style={styles.optionsGrid}>
+        {timeOptions.map((option) => (
+          <Card
+            key={option.value}
+            onPress={() => handleSelectTime(option.value)}
+            selected={localSelected === option.value}
             style={[
-              styles.timeButton,
-              selectedTime === option.seconds && styles.selectedButton,
+              styles.optionCard,
+              localSelected === option.value && styles.selectedCard,
             ]}
-            onPress={() => handleTimeSelect(option.seconds)}
           >
             <Text style={[
-              styles.timeButtonText,
-              selectedTime === option.seconds && styles.selectedButtonText,
+              styles.timeLabel,
+              localSelected === option.value && styles.selectedTimeLabel,
             ]}>
               {option.label}
             </Text>
-          </Pressable>
+            <Text style={[
+              styles.description,
+              localSelected === option.value && styles.selectedDescription,
+            ]}>
+              {option.description}
+            </Text>
+          </Card>
         ))}
       </View>
-      <View style={styles.bottomContainer}>
-        <ActionButton buttonStyle={{
-            ...styles.continueButton,
-            opacity: !selectedTime ? 0.5 : 1,
-          }}
-          title="Continue"
-          onPress={handleContinue}
-        />
-      </View>
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size={40} color="#0000ff" />
-          
-        </View>
-      )}
-    </View>
+
+      <Button
+        onPress={handleStart}
+        variant="primary"
+        size="large"
+        disabled={localSelected === null}
+        style={styles.startButton}
+      >
+        Let's Go! ▶
+      </Button>
+    </ScrollView>
   );
 };
 
@@ -82,88 +89,78 @@ export default Timer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: colors.background,
+  },
+  content: {
+    padding: spacing.lg,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+    marginTop: spacing.lg,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: borderRadius.xl,
+    backgroundColor: colors.primary + '20',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: spacing.base,
   },
-  overlay: {
-  ...StyleSheet.absoluteFillObject,
-  backgroundColor: 'rgba(0, 0, 0, 0.4)', // darkens the background
-},
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 40,
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginBottom: spacing.sm,
     textAlign: 'center',
-    color:'#ffffff',
   },
-  optionsContainer: {
-    width: '100%',
-    gap: 20,
-    marginBottom: 40,
+  subtitle: {
+    fontSize: typography.sizes.base,
+    color: colors.textSecondary,
+    textAlign: 'center',
+    paddingHorizontal: spacing.base,
+    lineHeight: typography.lineHeights.relaxed * typography.sizes.base,
   },
-  loadingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgb(255,255,255)',
+  optionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: spacing.md,
+    marginBottom: spacing.xl,
+
+  },
+  optionCard: {
+    width: '48%',
+    padding: spacing.lg,
+    alignItems: 'center',
+  },
+  selectedCard: {
+    backgroundColor: colors.primary,
+  },
+  timeLabel: {
+    fontSize: typography.sizes['2xl'],
+    fontWeight: typography.weights.bold,
+    color: colors.text,
+    marginBottom: spacing.xs,
+  },
+  selectedTimeLabel: {
+    color: colors.textInverse,
+  },
+  description: {
+    fontSize: typography.sizes.xs,
+    fontWeight: typography.weights.medium,
+    color: colors.textSecondary,
+    letterSpacing: 0.5,
+    flexDirection: 'row',
+  },
+  selectedDescription: {
+    color: colors.textInverse,
+  },
+  startButton: {
+    marginTop: spacing.lg,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  timeButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    borderRadius: 20,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      android: {
-        elevation: 5,
-      },
-      default: {
-        boxShadow: '0 2px 4px rgba(0,0,0,0.25)',
-      },
-    }),
-  },
-  selectedButton: {
-    backgroundColor: '#007AFF',
-  },
-  timeButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  selectedButtonText: {
-    color: '#fff',
-  },
-  bottomContainer: {
-    position: 'absolute',
-    bottom: 50,
-    width: '100%',
-    alignItems: 'center',
-  },
-  continueButton: {
-    width: 150,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-      default: {
-        boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-      },
-    }),
+    bottom: spacing.xs,
   },
 });
