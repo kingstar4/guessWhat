@@ -1,4 +1,5 @@
 import ActionButton from '@/components/ui/ActionButton';
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import TextField from '@/components/ui/TextField';
 import { usePlayerStore } from '@/store/usePlayerStore';
 import { useRouter } from 'expo-router';
@@ -16,7 +17,7 @@ const CreateTeamScreen = () => {
   const [roomId] = useState(() => uuid.v4()); // Store roomId in state so it doesn't change
   const router = useRouter()
   const validForm = teamName.trim() !== '' && hostName.trim() !== '';
-   const hasHydrated = usePlayerStore.persist.hasHydrated; 
+  const hasHydrated = usePlayerStore.persist.hasHydrated;
 
   const handleCreateTeam = async () => {
     if (!teamName || !hostName) {
@@ -61,61 +62,64 @@ const CreateTeamScreen = () => {
 
     // Navigate to Lobby
     router.push(`/waitingRoom/${roomCode}`);
-}
-if (!hasHydrated){
+  }
+  if (!hasHydrated) {
     return (
-      <View style={{alignItems:'center', justifyContent:'center'}}>
-        <ActivityIndicator size={'large'} color={'#007AFF'}/>
-      </View>
+      <ScreenBackground>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size={'large'} color={'#007AFF'} />
+        </View>
+      </ScreenBackground>
     );
-  } 
+  }
   return (
-    <View style={styles.container}>
-      <View style={styles.title}>
-        <Text style={styles.txt}>Create Team</Text>
-      </View>
-      <View style={styles.bodyContainer}>
-        <View style={styles.codeContainer}>
+    <ScreenBackground>
+      <View style={styles.container}>
+        <View style={styles.title}>
+          <Text style={styles.txt}>Create Team</Text>
+        </View>
+        <View style={styles.bodyContainer}>
+          <View style={styles.codeContainer}>
             <Text>Team Room Code</Text>
             <Text>{roomCode}</Text>
-        </View>
-        <TextField placeHolder="Team's Name" value={teamName} onChangeText={setTeamName} />
-        <TextField placeHolder="Host Player's Name" value={hostName} onChangeText={setHostName} />
+          </View>
+          <TextField placeHolder="Team's Name" value={teamName} onChangeText={setTeamName} />
+          <TextField placeHolder="Host Player's Name" value={hostName} onChangeText={setHostName} />
 
-        <ActionButton title='Create Team' onPress={handleCreateTeam} disabled={!validForm}  buttonStyle={{opacity: validForm ? 1 : 0.5}}/>
+          <ActionButton title='Create Team' onPress={handleCreateTeam} disabled={!validForm} buttonStyle={{ opacity: validForm ? 1 : 0.5 }} />
+        </View>
       </View>
-    </View>
+    </ScreenBackground>
   )
 }
 
 export default CreateTeamScreen;
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 20,
-    backgroundColor: '#fff',
-    gap:40,
+    gap: 40,
   },
-  title:{
+  title: {
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  txt:{
+  txt: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
-  codeContainer:{
-    flexDirection:'column',
+  codeContainer: {
+    flexDirection: 'column',
     alignItems: 'center',
     alignContent: 'center',
     justifyContent: 'center',
   },
-  bodyContainer:{
+  bodyContainer: {
     flex: 1,
     width: '100%',
     paddingHorizontal: 20,

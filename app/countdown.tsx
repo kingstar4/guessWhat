@@ -1,3 +1,4 @@
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { useBack } from '@/hooks/useBack';
 import { useGameStore } from '@/store/useGameStore';
 import { Ionicons } from '@expo/vector-icons';
@@ -61,74 +62,76 @@ const Countdown = () => {
     });
 
     return (
-        <View style={styles.container}>
-            {/* Header with branding */}
-            <View style={styles.header}>
-                <View style={styles.brandContainer}>
-                    <Ionicons name="game-controller" size={20} color="#06b6d4" />
-                    <Text style={styles.brandText}>{selectedCategory?.toUpperCase() || 'GUESS WHAT'}</Text>
-                </View>
-                <Ionicons name="settings-outline" size={24} color="#06b6d4" />
-            </View>
-
-            {/* Main content area - using flexDirection row for landscape */}
-            <View style={styles.mainContent}>
-                {/* Left side - GET READY text and countdown */}
-                <View style={styles.leftSection}>
-                    <Text style={styles.getReadyText}>GET READY</Text>
-
-                    {countDown > 0 ? (
-                        <View style={styles.countdownContainer}>
-                            <Animated.View
-                                style={[
-                                    styles.glowEffect,
-                                    { opacity: glowOpacity }
-                                ]}
-                            />
-                            <Text style={styles.countdownNumber}>{countDown}</Text>
-                        </View>
-                    ) : (
-                        <Text style={styles.letsGoText}>Let's Go! 😬</Text>
-                    )}
-
-                    <Text style={styles.instructionText}>Place the phone on{'\n'}your forehead</Text>
+        <ScreenBackground variant="landscape">
+            <View style={styles.container}>
+                {/* Header with branding */}
+                <View style={styles.header}>
+                    <View style={styles.brandContainer}>
+                        <Ionicons name="game-controller" size={20} color="#06b6d4" />
+                        <Text style={styles.brandText}>{selectedCategory?.toUpperCase() || 'GUESS WHAT'}</Text>
+                    </View>
+                    <Ionicons name="settings-outline" size={24} color="#06b6d4" />
                 </View>
 
-                {/* Right side - Progress and Pro Tip */}
-                <View style={styles.rightSection}>
-                    {/* Progress bar */}
-                    <View style={styles.progressContainer}>
-                        <View style={styles.progressBar}>
-                            <View style={[styles.progressFill, { width: `${((5 - countDown) / 5) * 100}%` }]} />
-                        </View>
-                        <View style={styles.paginationDots}>
-                            {[0, 1, 2].map((index) => (
-                                <View
-                                    key={index}
+                {/* Main content area - using flexDirection row for landscape */}
+                <View style={styles.mainContent}>
+                    {/* Left side - GET READY text and countdown */}
+                    <View style={styles.leftSection}>
+                        <Text style={styles.getReadyText}>GET READY</Text>
+
+                        {countDown > 0 ? (
+                            <View style={styles.countdownContainer}>
+                                <Animated.View
                                     style={[
-                                        styles.dot,
-                                        index === 0 && styles.dotActive
+                                        styles.glowEffect,
+                                        { opacity: glowOpacity }
                                     ]}
                                 />
-                            ))}
-                        </View>
+                                <Text style={styles.countdownNumber}>{countDown}</Text>
+                            </View>
+                        ) : (
+                            <Text style={styles.letsGoText}>Let's Go! 😬</Text>
+                        )}
+
+                        <Text style={styles.instructionText}>Place the phone on{'\n'}your forehead</Text>
                     </View>
 
-                    {/* Pro tip card */}
-                    <View style={styles.proTipCard}>
-                        <View style={styles.proTipIconContainer}>
-                            <Ionicons name="bulb" size={24} color="#fbbf24" />
+                    {/* Right side - Progress and Pro Tip */}
+                    <View style={styles.rightSection}>
+                        {/* Progress bar */}
+                        <View style={styles.progressContainer}>
+                            <View style={styles.progressBar}>
+                                <View style={[styles.progressFill, { width: `${((5 - countDown) / 5) * 100}%` }]} />
+                            </View>
+                            <View style={styles.paginationDots}>
+                                {[0, 1, 2].map((index) => (
+                                    <View
+                                        key={index}
+                                        style={[
+                                            styles.dot,
+                                            index === 0 && styles.dotActive
+                                        ]}
+                                    />
+                                ))}
+                            </View>
                         </View>
-                        <View style={styles.proTipContent}>
-                            <Text style={styles.proTipTitle}>PRO TIP</Text>
-                            <Text style={styles.proTipText}>
-                                Tilt down for Correct, tilt up to Pass!
-                            </Text>
+
+                        {/* Pro tip card */}
+                        <View style={styles.proTipCard}>
+                            <View style={styles.proTipIconContainer}>
+                                <Ionicons name="bulb" size={24} color="#fbbf24" />
+                            </View>
+                            <View style={styles.proTipContent}>
+                                <Text style={styles.proTipTitle}>PRO TIP</Text>
+                                <Text style={styles.proTipText}>
+                                    Tilt down for Correct, tilt up to Pass!
+                                </Text>
+                            </View>
                         </View>
                     </View>
                 </View>
             </View>
-        </View>
+        </ScreenBackground>
     );
 };
 
@@ -137,7 +140,6 @@ export default Countdown;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
     },
     header: {
         flexDirection: 'row',
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
-        backgroundColor: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 20,
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
     progressBar: {
         width: '80%',
         height: 6,
-        backgroundColor: '#e5e7eb',
+        backgroundColor: 'rgba(229, 231, 235, 0.8)',
         borderRadius: 3,
         overflow: 'hidden',
         marginBottom: 16,
@@ -252,14 +254,14 @@ const styles = StyleSheet.create({
         width: 8,
         height: 8,
         borderRadius: 4,
-        backgroundColor: '#d1d5db',
+        backgroundColor: 'rgba(209, 213, 219, 0.8)',
     },
     dotActive: {
         backgroundColor: '#06b6d4',
     },
     proTipCard: {
         flexDirection: 'row',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderRadius: 16,
         padding: 20,
         shadowColor: '#000',

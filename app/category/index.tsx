@@ -1,3 +1,4 @@
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import categoryTable from '@/constants/categoryTable';
 import { borderRadius, colors, shadows, spacing, typography } from '@/constants/designTokens';
 import { useBack } from '@/hooks/useBack';
@@ -81,106 +82,110 @@ const Category = () => {
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.errorText}>Error loading categories:</Text>
-        <Text style={styles.errorMessage}>{(error as Error).message}</Text>
-        <Text style={styles.errorHint}>Make sure json-server is running on port 3000</Text>
-      </View>
+      <ScreenBackground>
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>Error loading categories:</Text>
+          <Text style={styles.errorMessage}>{(error as Error).message}</Text>
+          <Text style={styles.errorHint}>Make sure json-server is running on port 3000</Text>
+        </View>
+      </ScreenBackground>
     );
   }
 
   return (
-    <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-        <MaterialIcons name="arrow-back" size={24} color={colors.text} />
-      </TouchableOpacity>
+    <ScreenBackground>
+      <View style={styles.container}>
+        {/* Back Button */}
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+          <MaterialIcons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
 
-      {/* Header Section */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Select Category</Text>
-        <Text style={styles.subtitle}>Choose a deck to start the fun!</Text>
-      </View>
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <MaterialIcons name="search" size={20} color={colors.textSecondary} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search categories..."
-          placeholderTextColor={colors.textSecondary}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-
-      {/* Filter Tabs */}
-      <View style={styles.filterContainer}>
-        <Pressable
-          style={[styles.filterTab, activeFilter === 'all' && styles.filterTabActive]}
-          onPress={() => handleFilterChange('all')}
-        >
-          <Text style={[styles.filterText, activeFilter === 'all' && styles.filterTextActive]}>
-            All Decks
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[styles.filterTab, activeFilter === 'trending' && styles.filterTabActive]}
-          onPress={() => handleFilterChange('trending')}
-        >
-          <Text style={[styles.filterText, activeFilter === 'trending' && styles.filterTextActive]}>
-            Trending
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[styles.filterTab, activeFilter === 'kids' && styles.filterTabActive]}
-          onPress={() => handleFilterChange('kids')}
-        >
-          <Text style={[styles.filterText, activeFilter === 'kids' && styles.filterTextActive]}>
-            Kids
-          </Text>
-        </Pressable>
-      </View>
-
-      {/* Category Grid */}
-      <FlatList
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
-        scrollEnabled={true}
-        contentContainerStyle={styles.flatlist}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={4}
-        removeClippedSubviews={true}
-        data={filteredCategories}
-        renderItem={({ item }) => (
-          <CategoryCard
-            icon={item.icon}
-            iconLibrary={item.iconLibrary}
-            gradient={item.gradient}
-            text={item.name}
-            wordCount={item.wordCount}
-            onPress={() => handleCategorySelect(item.name)}
-            selected={selectedCategory === item.name.toLowerCase()}
-          />
-        )}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <MaterialIcons name="search-off" size={48} color={colors.textTertiary} />
-            <Text style={styles.emptyText}>No categories found</Text>
-            <Text style={styles.emptySubtext}>Try a different search term</Text>
-          </View>
-        }
-      />
-
-      {isLoading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Loading Categories...</Text>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Select Category</Text>
+          <Text style={styles.subtitle}>Choose a deck to start the fun!</Text>
         </View>
-      )}
-    </View>
+
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <MaterialIcons name="search" size={20} color={colors.textSecondary} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search categories..."
+            placeholderTextColor={colors.textSecondary}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+
+        {/* Filter Tabs */}
+        <View style={styles.filterContainer}>
+          <Pressable
+            style={[styles.filterTab, activeFilter === 'all' && styles.filterTabActive]}
+            onPress={() => handleFilterChange('all')}
+          >
+            <Text style={[styles.filterText, activeFilter === 'all' && styles.filterTextActive]}>
+              All Decks
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={[styles.filterTab, activeFilter === 'trending' && styles.filterTabActive]}
+            onPress={() => handleFilterChange('trending')}
+          >
+            <Text style={[styles.filterText, activeFilter === 'trending' && styles.filterTextActive]}>
+              Trending
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={[styles.filterTab, activeFilter === 'kids' && styles.filterTabActive]}
+            onPress={() => handleFilterChange('kids')}
+          >
+            <Text style={[styles.filterText, activeFilter === 'kids' && styles.filterTextActive]}>
+              Kids
+            </Text>
+          </Pressable>
+        </View>
+
+        {/* Category Grid */}
+        <FlatList
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          scrollEnabled={true}
+          contentContainerStyle={styles.flatlist}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={4}
+          removeClippedSubviews={true}
+          data={filteredCategories}
+          renderItem={({ item }) => (
+            <CategoryCard
+              icon={item.icon}
+              iconLibrary={item.iconLibrary}
+              gradient={item.gradient}
+              text={item.name}
+              wordCount={item.wordCount}
+              onPress={() => handleCategorySelect(item.name)}
+              selected={selectedCategory === item.name.toLowerCase()}
+            />
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <MaterialIcons name="search-off" size={48} color={colors.textTertiary} />
+              <Text style={styles.emptyText}>No categories found</Text>
+              <Text style={styles.emptySubtext}>Try a different search term</Text>
+            </View>
+          }
+        />
+
+        {isLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={styles.loadingText}>Loading Categories...</Text>
+          </View>
+        )}
+      </View>
+    </ScreenBackground>
   );
 };
 
@@ -189,7 +194,6 @@ export default Category;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     paddingTop: spacing.xl,
   },
   backButton: {
@@ -292,7 +296,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
     padding: spacing.lg,
   },
   loadingOverlay: {

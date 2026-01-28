@@ -16,9 +16,9 @@ export const colors = {
     successDark: '#1B5E20',
 
     // Error - Pink/Red for wrong answers
-    error: '#EC407A',
-    errorLight: '#F48FB1',
-    errorDark: '#C2185B',
+    error: '#FF5252',      // Tomato red
+    errorLight: '#FF8A80', // Light tomato
+    errorDark: '#D32F2F',  // Deep tomato
 
     // Neutrals
     background: '#F8F9FA',

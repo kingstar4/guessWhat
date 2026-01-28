@@ -1,7 +1,7 @@
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, spacing, typography } from '@/constants/designTokens';
 import { useSoundStore } from '@/store/useSoundStore';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
@@ -48,55 +48,51 @@ export default function Index() {
   });
 
   return (
-    <View style={styles.container}>
-      {/* Background Gradient */}
-      <LinearGradient
-        colors={['#F8F9FA', '#E9ECEF']}
-        style={StyleSheet.absoluteFillObject}
-      />
-
-      <Animated.View style={[styles.content, { opacity: fadeIn }]}>
-        {/* App Icon with Glow */}
-        <View style={styles.iconContainer}>
-          <View style={styles.iconGlow} />
-          <View style={styles.iconWrapper}>
-            <Image
-              source={require('../assets/images/guessWhat icon.png')}
-              style={styles.icon}
-              contentFit="contain"
-            />
-          </View>
-        </View>
-
-        {/* App Name */}
-        <Text style={styles.appName}>GuessWhat</Text>
-        <View style={styles.underline} />
-
-        {/* Loading Section */}
-        <View style={styles.loadingSection}>
-          <View style={styles.loadingHeader}>
-            <Text style={styles.loadingText}>INITIALIZING</Text>
-            <Text style={styles.versionText}>v1.0.0</Text>
+    <ScreenBackground>
+      <View style={styles.container}>
+        <Animated.View style={[styles.content, { opacity: fadeIn }]}>
+          {/* App Icon with Glow */}
+          <View style={styles.iconContainer}>
+            <View style={styles.iconGlow} />
+            <View style={styles.iconWrapper}>
+              <Image
+                source={require('../assets/images/guessWhat icon.png')}
+                style={styles.icon}
+                contentFit="contain"
+              />
+            </View>
           </View>
 
-          {/* Progress Bar */}
-          <View style={styles.progressContainer}>
-            <Animated.View
-              style={[
-                styles.progressBar,
-                { width: progressWidth },
-              ]}
-            />
+          {/* App Name */}
+          <Text style={styles.appName}>GuessWhat</Text>
+          <View style={styles.underline} />
+
+          {/* Loading Section */}
+          <View style={styles.loadingSection}>
+            <View style={styles.loadingHeader}>
+              <Text style={styles.loadingText}>INITIALIZING</Text>
+              <Text style={styles.versionText}>v1.0.0</Text>
+            </View>
+
+            {/* Progress Bar */}
+            <View style={styles.progressContainer}>
+              <Animated.View
+                style={[
+                  styles.progressBar,
+                  { width: progressWidth },
+                ]}
+              />
+            </View>
           </View>
-        </View>
 
-        {/* Tagline */}
-        <Text style={styles.tagline}>"Fun in every round"</Text>
+          {/* Tagline */}
+          <Text style={styles.tagline}>"Fun in every round"</Text>
 
-        {/* Footer */}
-        <Text style={styles.footer}>GUESS WHAT GAME</Text>
-      </Animated.View>
-    </View>
+          {/* Footer */}
+          <Text style={styles.footer}>GUESS WHAT GAME</Text>
+        </Animated.View>
+      </View>
+    </ScreenBackground>
   );
 }
 

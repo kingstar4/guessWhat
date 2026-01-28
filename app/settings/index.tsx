@@ -1,3 +1,4 @@
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, shadows, spacing, typography } from '@/constants/designTokens';
 import { useSoundStore } from '@/store/useSoundStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -26,74 +27,76 @@ const Settings = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-        <MaterialIcons name="arrow-back" size={24} color={colors.text} />
-      </TouchableOpacity>
+    <ScreenBackground>
+      <View style={styles.container}>
+        {/* Back Button */}
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
+          <MaterialIcons name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
 
-      {/* Header Section */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Settings</Text>
-        <Text style={styles.subtitle}>Customize your experience</Text>
-      </View>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Settings</Text>
+          <Text style={styles.subtitle}>Customize your experience</Text>
+        </View>
 
-      {/* Settings Content */}
-      <View style={styles.content}>
-        {/* Sound Setting */}
-        <View style={[styles.settingCard, styles.firstCard]}>
-          <View style={styles.settingLeft}>
-            <View style={styles.iconContainer}>
-              <Ionicons
-                name={isSoundOn ? "volume-high" : "volume-mute"}
-                size={24}
-                color={colors.primary}
-              />
+        {/* Settings Content */}
+        <View style={styles.content}>
+          {/* Sound Setting */}
+          <View style={[styles.settingCard, styles.firstCard]}>
+            <View style={styles.settingLeft}>
+              <View style={styles.iconContainer}>
+                <Ionicons
+                  name={isSoundOn ? "volume-high" : "volume-mute"}
+                  size={24}
+                  color={colors.primary}
+                />
+              </View>
+              <View style={styles.settingInfo}>
+                <Text style={styles.settingTitle}>Sound & Music</Text>
+                <Text style={styles.settingDescription}>
+                  {isSoundOn ? 'Sound effects and music enabled' : 'Sound effects and music disabled'}
+                </Text>
+              </View>
             </View>
-            <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Sound & Music</Text>
-              <Text style={styles.settingDescription}>
-                {isSoundOn ? 'Sound effects and music enabled' : 'Sound effects and music disabled'}
+            <Switch
+              value={isSoundOn}
+              onValueChange={handleToggle}
+              trackColor={{ false: colors.borderDark, true: colors.primaryLight }}
+              thumbColor={isSoundOn ? colors.primary : colors.surface}
+            />
+          </View>
+
+          {/* How to Play Setting */}
+          <Pressable
+            style={styles.settingCard}
+            onPress={() => router.push('/settings/howToPlay')}
+          >
+            <View style={styles.settingLeft}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="help-circle" size={24} color={colors.primary} />
+              </View>
+              <View style={styles.settingInfo}>
+                <Text style={styles.settingTitle}>How to Play</Text>
+                <Text style={styles.settingDescription}>Learn the game rules and tips</Text>
+              </View>
+            </View>
+            <MaterialIcons name="chevron-right" size={24} color={colors.textSecondary} />
+          </Pressable>
+
+          {/* About Section */}
+          <View style={styles.aboutSection}>
+            <Text style={styles.aboutTitle}>About</Text>
+            <View style={styles.aboutCard}>
+              <Text style={styles.aboutText}>GuessWhat! v1.0.0</Text>
+              <Text style={styles.aboutSubtext}>
+                A fun word-guessing game for friends and family
               </Text>
             </View>
           </View>
-          <Switch
-            value={isSoundOn}
-            onValueChange={handleToggle}
-            trackColor={{ false: colors.borderDark, true: colors.primaryLight }}
-            thumbColor={isSoundOn ? colors.primary : colors.surface}
-          />
-        </View>
-
-        {/* How to Play Setting */}
-        <Pressable
-          style={styles.settingCard}
-          onPress={() => router.push('/settings/howToPlay')}
-        >
-          <View style={styles.settingLeft}>
-            <View style={styles.iconContainer}>
-              <Ionicons name="help-circle" size={24} color={colors.primary} />
-            </View>
-            <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>How to Play</Text>
-              <Text style={styles.settingDescription}>Learn the game rules and tips</Text>
-            </View>
-          </View>
-          <MaterialIcons name="chevron-right" size={24} color={colors.textSecondary} />
-        </Pressable>
-
-        {/* About Section */}
-        <View style={styles.aboutSection}>
-          <Text style={styles.aboutTitle}>About</Text>
-          <View style={styles.aboutCard}>
-            <Text style={styles.aboutText}>GuessWhat! v1.0.0</Text>
-            <Text style={styles.aboutSubtext}>
-              A fun word-guessing game for friends and family
-            </Text>
-          </View>
         </View>
       </View>
-    </View>
+    </ScreenBackground>
   );
 };
 
@@ -102,7 +105,6 @@ export default Settings;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     paddingTop: spacing.xl,
   },
   backButton: {

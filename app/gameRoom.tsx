@@ -1,3 +1,4 @@
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, shadows, spacing, typography } from '@/constants/designTokens';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -162,9 +163,11 @@ const GameRoom = () => {
   // Loading state
   if (gameStatus === 'loading') {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <Text style={styles.loadingText}>Loading game...</Text>
-      </View>
+      <ScreenBackground variant="landscape">
+        <View style={[styles.container, styles.centerContent]}>
+          <Text style={styles.loadingText}>Loading game...</Text>
+        </View>
+      </ScreenBackground>
     );
   }
 
@@ -174,98 +177,102 @@ const GameRoom = () => {
 
   if (!currentWord) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <Text style={styles.errorText}>No word available</Text>
-      </View>
+      <ScreenBackground variant="landscape">
+        <View style={[styles.container, styles.centerContent]}>
+          <Text style={styles.errorText}>No word available</Text>
+        </View>
+      </ScreenBackground>
     );
   }
 
   return (
-    <View style={styles.container}>
-      {/* Top Bar */}
-      <View style={styles.topBar}>
-        {/* Score Display */}
-        <View style={styles.scoreDisplay}>
-          <View style={styles.scoreBadge}>
-            <MaterialIcons name="check-circle" size={24} color={colors.success} />
-            <AnimatedNumber value={getCorrectCount()} style={styles.scoreNumber} />
+    <ScreenBackground variant="landscape">
+      <View style={styles.container}>
+        {/* Top Bar */}
+        <View style={styles.topBar}>
+          {/* Score Display */}
+          <View style={styles.scoreDisplay}>
+            <View style={styles.scoreBadge}>
+              <MaterialIcons name="check-circle" size={24} color={colors.success} />
+              <AnimatedNumber value={getCorrectCount()} style={styles.scoreNumber} />
+            </View>
+
+            <View style={[styles.scoreBadge, styles.scoreBadgeError]}>
+              <MaterialIcons name="cancel" size={24} color={colors.error} />
+              <AnimatedNumber value={getWrongCount()} style={styles.scoreNumber} />
+            </View>
           </View>
 
-          <View style={[styles.scoreBadge, styles.scoreBadgeError]}>
-            <MaterialIcons name="cancel" size={24} color={colors.error} />
-            <AnimatedNumber value={getWrongCount()} style={styles.scoreNumber} />
-          </View>
-        </View>
-
-        {/* Timer */}
-        <CircularProgress
-          timeLeft={timeLeft}
-          totalTime={selectedTime || 0}
-          size={70}
-        />
-      </View>
-
-      {/* Main Content */}
-      <View style={styles.mainContent}>
-        <View style={styles.guessLabelContainer}>
-          <Text style={styles.guessLabel}>GUESS THE WORD</Text>
-        </View>
-        <View style={styles.wordCard}>
-          {/* <View style={styles.divider} /> */}
-          <Text style={styles.mainWord}>{currentWord.term}</Text>
-        </View>
-
-        <View style={styles.tabooSection}>
-          <Text style={styles.tabooLabel}>DON'T SAY</Text>
-          <View style={styles.tabooChips}>
-            {currentWord.tabooWords.map((word, index) => (
-              <Chip
-                key={index}
-                label={word}
-                variant="error"
-                size="large"
-              />
-            ))}
-          </View>
-        </View>
-      </View>
-
-      {/* Bottom Bar */}
-      <View style={styles.bottomBar}>
-        {/* Pause Button */}
-        <Pressable style={styles.pauseButton} onPress={togglePause}>
-          <MaterialIcons
-            name={isPaused ? "play-arrow" : "pause"}
-            size={24}
-            color={colors.primary}
+          {/* Timer */}
+          <CircularProgress
+            timeLeft={timeLeft}
+            totalTime={selectedTime || 0}
+            size={70}
           />
-          <Text style={styles.pauseText}>{isPaused ? "RESUME" : "PAUSE"}</Text>
-        </Pressable>
-      </View>
+        </View>
 
-      {/* Action Buttons */}
-      <View style={styles.actionButtons}>
-        <Pressable
-          style={[styles.actionButton, styles.passButton]}
-          onPress={() => handleAnswer(false)}
-          disabled={timeLeft <= 0 || isPaused}
-        >
-          <MaterialIcons name="close" size={32} color={colors.textInverse} />
-          <Text style={styles.actionButtonText}>SKIP</Text>
-          <Text style={styles.actionButtonSubtext}>-1 point</Text>
-        </Pressable>
+        {/* Main Content */}
+        <View style={styles.mainContent}>
+          <View style={styles.guessLabelContainer}>
+            <Text style={styles.guessLabel}>GUESS THE WORD</Text>
+          </View>
+          <View style={styles.wordCard}>
+            {/* <View style={styles.divider} /> */}
+            <Text style={styles.mainWord}>{currentWord.term}</Text>
+          </View>
 
-        <Pressable
-          style={[styles.actionButton, styles.correctButton]}
-          onPress={() => handleAnswer(true)}
-          disabled={timeLeft <= 0 || isPaused}
-        >
-          <MaterialIcons name="check" size={32} color={colors.textInverse} />
-          <Text style={styles.actionButtonText}>CORRECT</Text>
-          <Text style={styles.actionButtonSubtext}>+1 point</Text>
-        </Pressable>
+          <View style={styles.tabooSection}>
+            <Text style={styles.tabooLabel}>DON'T SAY</Text>
+            <View style={styles.tabooChips}>
+              {currentWord.tabooWords.map((word, index) => (
+                <Chip
+                  key={index}
+                  label={word}
+                  variant="error"
+                  size="large"
+                />
+              ))}
+            </View>
+          </View>
+        </View>
+
+        {/* Bottom Bar */}
+        <View style={styles.bottomBar}>
+          {/* Pause Button */}
+          <Pressable style={styles.pauseButton} onPress={togglePause}>
+            <MaterialIcons
+              name={isPaused ? "play-arrow" : "pause"}
+              size={24}
+              color={colors.primary}
+            />
+            <Text style={styles.pauseText}>{isPaused ? "RESUME" : "PAUSE"}</Text>
+          </Pressable>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.actionButtons}>
+          <Pressable
+            style={[styles.actionButton, styles.passButton]}
+            onPress={() => handleAnswer(false)}
+            disabled={timeLeft <= 0 || isPaused}
+          >
+            <MaterialIcons name="close" size={32} color={colors.textInverse} />
+            <Text style={styles.actionButtonText}>SKIP</Text>
+            <Text style={styles.actionButtonSubtext}>-1 point</Text>
+          </Pressable>
+
+          <Pressable
+            style={[styles.actionButton, styles.correctButton]}
+            onPress={() => handleAnswer(true)}
+            disabled={timeLeft <= 0 || isPaused}
+          >
+            <MaterialIcons name="check" size={32} color={colors.textInverse} />
+            <Text style={styles.actionButtonText}>CORRECT</Text>
+            <Text style={styles.actionButtonSubtext}>+1 point</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </ScreenBackground>
   );
 };
 
@@ -274,7 +281,6 @@ export default GameRoom;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     paddingVertical: spacing.base,
     paddingHorizontal: spacing.lg,
   },
@@ -320,9 +326,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wordCard: {
-    // backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,
-    // paddingVertical: spacing.sm,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.md,
@@ -383,7 +387,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.sm,
     borderRadius: borderRadius.full,
@@ -394,7 +398,7 @@ const styles = StyleSheet.create({
     ...shadows.sm,
   },
   scoreBadgeError: {
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderColor: 'rgba(239, 68, 68, 0.3)',
   },
   scoreNumber: {
@@ -408,7 +412,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingHorizontal: spacing.base,
     paddingVertical: spacing.sm,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: borderRadius.md,
     ...shadows.sm,
   },

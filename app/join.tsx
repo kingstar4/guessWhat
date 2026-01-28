@@ -1,4 +1,5 @@
 import ActionButton from '@/components/ui/ActionButton';
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import TextField from '@/components/ui/TextField';
 import { usePortraitLock } from '@/hooks/usePortrait';
 import { useValidateForm } from '@/hooks/useValidateForm';
@@ -11,12 +12,9 @@ import uuid from 'react-native-uuid';
 
 const JoinGameScreen = () => {
   usePortraitLock();
-  
-  // const [roomCode, setRoomCode] = useState('')
-  // const [playerName, setPlayerName] = useState('')
 
-  const [form, setForm]= useState({
-    roomCode:'',
+  const [form, setForm] = useState({
+    roomCode: '',
     playerName: '',
   })
   const validForm = useValidateForm(form)
@@ -28,8 +26,8 @@ const JoinGameScreen = () => {
     }));
   };
 
-  
- const router = useRouter()
+
+  const router = useRouter()
 
   const handleJoinGame = async () => {
     if (!form.roomCode || !form.playerName) {
@@ -80,23 +78,25 @@ const JoinGameScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Join Team</Text>
+    <ScreenBackground>
+      <View style={styles.container}>
+        <Text style={styles.title}>Join Team</Text>
 
-      <TextField
-        placeHolder="Enter Team Room Code"
-        value={form.roomCode}
-        onChangeText={(text)=>handleChange('roomCode', text)}
-      />
+        <TextField
+          placeHolder="Enter Team Room Code"
+          value={form.roomCode}
+          onChangeText={(text) => handleChange('roomCode', text)}
+        />
 
-      <TextField
-        placeHolder="Enter Your Name"
-        value={form.playerName}
-        onChangeText={(text)=>handleChange('playerName', text)}
-      />
+        <TextField
+          placeHolder="Enter Your Name"
+          value={form.playerName}
+          onChangeText={(text) => handleChange('playerName', text)}
+        />
 
-      <ActionButton title="Join" onPress={handleJoinGame} disabled={!validForm} buttonStyle={{opacity: validForm ? 1 : 0.5}}/>
-    </View>
+        <ActionButton title="Join" onPress={handleJoinGame} disabled={!validForm} buttonStyle={{ opacity: validForm ? 1 : 0.5 }} />
+      </View>
+    </ScreenBackground>
   )
 }
 
@@ -104,6 +104,7 @@ export default JoinGameScreen
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
   },
   title: {

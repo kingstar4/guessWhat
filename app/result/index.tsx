@@ -1,6 +1,7 @@
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, spacing, typography } from '@/constants/designTokens';
 import { useBack } from '@/hooks/useBack';
 import { usePortraitLock } from '@/hooks/usePortrait';
@@ -68,69 +69,65 @@ const GameResults = () => {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <StatusBar hidden={true} />
+    <ScreenBackground>
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <StatusBar hidden={true} />
 
-      <View style={styles.header}>
-        <MaterialIcons name="emoji-events" size={64} color={colors.primary} />
-        <Text style={styles.title}>Game Results</Text>
-        <Text style={styles.category}>{selectedCategory?.toUpperCase()}</Text>
-      </View>
+        <View style={styles.header}>
+          <MaterialIcons name="emoji-events" size={64} color={colors.primary} />
+          <Text style={styles.title}>Game Results</Text>
+          <Text style={styles.category}>{selectedCategory?.toUpperCase()}</Text>
+        </View>
 
-      {/* Score Summary */}
-      <View style={styles.summaryContainer}>
-        <Card style={styles.scoreCard}>
-          <MaterialIcons name="check-circle" size={32} color={colors.success} />
-          <AnimatedNumber value={correctAnswers.length} style={styles.scoreNumber} />
-          <Text style={styles.scoreLabel}>Correct</Text>
+        {/* Score Summary */}
+        <View style={styles.summaryContainer}>
+          <Card style={styles.scoreCard}>
+            <MaterialIcons name="check-circle" size={32} color={colors.success} />
+            <AnimatedNumber value={correctAnswers.length} style={styles.scoreNumber} />
+            <Text style={styles.scoreLabel}>Correct</Text>
+          </Card>
+
+          <Card style={styles.scoreCard}>
+            <MaterialIcons name="cancel" size={32} color={colors.error} />
+            <AnimatedNumber value={wrongAnswers.length} style={styles.scoreNumber} />
+            <Text style={styles.scoreLabel}>Wrong</Text>
+          </Card>
+        </View>
+
+        {/* Game Stats */}
+        <Card style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Total Questions:</Text>
+            <Text style={styles.statValue}>{totalQuestions}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Game Duration:</Text>
+            <Text style={styles.statValue}>{gameDuration}s</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Questions per Minute:</Text>
+            <Text style={styles.statValue}>
+              {gameDuration > 0 ? ((totalQuestions / gameDuration) * 60).toFixed(1) : '0'}
+            </Text>
+          </View>
         </Card>
 
-        <Card style={styles.scoreCard}>
-          <MaterialIcons name="cancel" size={32} color={colors.error} />
-          <AnimatedNumber value={wrongAnswers.length} style={styles.scoreNumber} />
-          <Text style={styles.scoreLabel}>Wrong</Text>
-        </Card>
+        {/* Answer Details */}
+        {renderAnswerList(correctAnswers, 'Correct Answers', 'check-circle', colors.success)}
+        {renderAnswerList(wrongAnswers, 'Wrong Answers', 'cancel', colors.error)}
 
-        <Card style={styles.scoreCard}>
-          <MaterialIcons name="timeline" size={32} color={colors.primary} />
-          <Text style={styles.scoreNumber}>{accuracy}%</Text>
-          <Text style={styles.scoreLabel}>Accuracy</Text>
-        </Card>
-      </View>
+        {/* Action Buttons */}
+        <View style={styles.buttonContainer}>
+          <Button onPress={handlePlayAgain} variant="primary" size="large">
+            Play Again
+          </Button>
 
-      {/* Game Stats */}
-      <Card style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>Total Questions:</Text>
-          <Text style={styles.statValue}>{totalQuestions}</Text>
+          <Button onPress={handleBackToHome} variant="primary" size="large">
+            Back to Home
+          </Button>
         </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>Game Duration:</Text>
-          <Text style={styles.statValue}>{gameDuration}s</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>Questions per Minute:</Text>
-          <Text style={styles.statValue}>
-            {gameDuration > 0 ? ((totalQuestions / gameDuration) * 60).toFixed(1) : '0'}
-          </Text>
-        </View>
-      </Card>
-
-      {/* Answer Details */}
-      {renderAnswerList(correctAnswers, 'Correct Answers', 'check-circle', colors.success)}
-      {renderAnswerList(wrongAnswers, 'Wrong Answers', 'cancel', colors.error)}
-
-      {/* Action Buttons */}
-      <View style={styles.buttonContainer}>
-        <Button onPress={handlePlayAgain} variant="primary" size="large">
-          Play Again
-        </Button>
-
-        <Button onPress={handleBackToHome} variant="primary" size="large">
-          Back to Home
-        </Button>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </ScreenBackground>
   );
 };
 
@@ -139,7 +136,6 @@ export default GameResults;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: spacing.lg,

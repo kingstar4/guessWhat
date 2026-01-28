@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, spacing, typography } from '@/constants/designTokens';
 import { useBack } from '@/hooks/useBack';
 import { useGameStore } from '@/store/useGameStore';
@@ -33,54 +34,56 @@ const Timer = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <MaterialIcons name="timer" size={48} color={colors.primary} />
+    <ScreenBackground>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <View style={styles.iconContainer}>
+            <MaterialIcons name="timer" size={48} color={colors.primary} />
+          </View>
+          <Text style={styles.title}>How long to play?</Text>
+          <Text style={styles.subtitle}>
+            Choose how many seconds each player gets per turn
+          </Text>
         </View>
-        <Text style={styles.title}>How long to play?</Text>
-        <Text style={styles.subtitle}>
-          Choose how many seconds each player gets per turn
-        </Text>
-      </View>
 
-      <View style={styles.optionsGrid}>
-        {timeOptions.map((option) => (
-          <Card
-            key={option.value}
-            onPress={() => handleSelectTime(option.value)}
-            selected={localSelected === option.value}
-            style={[
-              styles.optionCard,
-              localSelected === option.value && styles.selectedCard,
-            ]}
-          >
-            <Text style={[
-              styles.timeLabel,
-              localSelected === option.value && styles.selectedTimeLabel,
-            ]}>
-              {option.label}
-            </Text>
-            <Text style={[
-              styles.description,
-              localSelected === option.value && styles.selectedDescription,
-            ]}>
-              {option.description}
-            </Text>
-          </Card>
-        ))}
-      </View>
+        <View style={styles.optionsGrid}>
+          {timeOptions.map((option) => (
+            <Card
+              key={option.value}
+              onPress={() => handleSelectTime(option.value)}
+              selected={localSelected === option.value}
+              style={[
+                styles.optionCard,
+                localSelected === option.value && styles.selectedCard,
+              ]}
+            >
+              <Text style={[
+                styles.timeLabel,
+                localSelected === option.value && styles.selectedTimeLabel,
+              ]}>
+                {option.label}
+              </Text>
+              <Text style={[
+                styles.description,
+                localSelected === option.value && styles.selectedDescription,
+              ]}>
+                {option.description}
+              </Text>
+            </Card>
+          ))}
+        </View>
 
-      <Button
-        onPress={handleStart}
-        variant="primary"
-        size="large"
-        disabled={localSelected === null}
-        style={styles.startButton}
-      >
-        Let's Go! ▶
-      </Button>
-    </ScrollView>
+        <Button
+          onPress={handleStart}
+          variant="primary"
+          size="large"
+          disabled={localSelected === null}
+          style={styles.startButton}
+        >
+          Let's Go! ▶
+        </Button>
+      </ScrollView>
+    </ScreenBackground>
   );
 };
 
@@ -89,7 +92,6 @@ export default Timer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   content: {
     padding: spacing.lg,

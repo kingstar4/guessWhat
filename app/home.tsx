@@ -1,4 +1,5 @@
 import NavigateButton from '@/components/ui/NavigateButton';
+import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, shadows, spacing, typography } from '@/constants/designTokens';
 import { usePortraitLock } from '@/hooks/usePortrait';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +12,7 @@ const Home = () => {
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
+    <ScreenBackground>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.topHeader}>
@@ -60,7 +61,7 @@ const Home = () => {
         </View>
 
       </ScrollView>
-    </View>
+    </ScreenBackground>
   );
 };
 
