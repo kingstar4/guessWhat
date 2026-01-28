@@ -6,16 +6,22 @@ import { borderRadius, colors, spacing, typography } from '@/constants/designTok
 import { useBack } from '@/hooks/useBack';
 import { usePortraitLock } from '@/hooks/usePortrait';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as MediaLibrary from 'expo-media-library';
 import { useRouter } from 'expo-router';
+import * as Sharing from 'expo-sharing';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ViewShot from 'react-native-view-shot';
 import { useGameStore } from '../../store/useGameStore';
 
 const GameResults = () => {
   useBack();
   usePortraitLock();
   const router = useRouter();
+  const viewShotRef = useRef<ViewShot>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
   const {
     correctAnswers,
     wrongAnswers,
@@ -26,7 +32,6 @@ const GameResults = () => {
   } = useGameStore();
 
   const totalQuestions = correctAnswers.length + wrongAnswers.length;
-  const accuracy = totalQuestions > 0 ? (correctAnswers.length / totalQuestions * 100).toFixed(1) : 0;
   const gameDuration = gameStartTime && gameEndTime ?
     Math.round((gameEndTime - gameStartTime) / 1000) : 0;
 
@@ -38,6 +43,72 @@ const GameResults = () => {
   const handleBackToHome = () => {
     resetGame();
     router.replace('/home');
+  };
+
+  const handleSaveResult = async () => {
+    if (!viewShotRef.current) return;
+
+    setIsSaving(true);
+    try {
+      // Capture the view as an image
+      const uri = await viewShotRef.current.capture?.();
+
+      if (!uri) {
+        Alert.alert('Error', 'Failed to capture results');
+        return;
+      }
+
+      // Request permission to save to media library
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please grant permission to save images to your gallery.');
+        return;
+      }
+
+      // Save to media library
+      await MediaLibrary.saveToLibraryAsync(uri);
+      Alert.alert('Success! 🎉', 'Your results have been saved to your gallery!');
+    } catch (error) {
+      console.error('Error saving result:', error);
+      Alert.alert('Error', 'Failed to save your results. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleShareResult = async () => {
+    if (!viewShotRef.current) return;
+
+    setIsSaving(true);
+    try {
+      // Capture the view as an image
+      const uri = await viewShotRef.current.capture?.();
+
+      if (!uri) {
+        Alert.alert('Error', 'Failed to capture results');
+        return;
+      }
+
+      // Check if sharing is available
+      const isAvailable = await Sharing.isAvailableAsync();
+
+      if (!isAvailable) {
+        Alert.alert('Sharing not available', 'Sharing is not available on this device.');
+        return;
+      }
+
+      // Share the image
+      await Sharing.shareAsync(uri, {
+        mimeType: 'image/png',
+        dialogTitle: 'Share your GuessWhat results!',
+      });
+    } catch (error) {
+      console.error('Error sharing result:', error);
+      Alert.alert('Error', 'Failed to share your results. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const renderAnswerList = (answers: typeof correctAnswers, title: string, iconName: string, iconColor: string) => (
@@ -73,44 +144,76 @@ const GameResults = () => {
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <StatusBar hidden={true} />
 
-        <View style={styles.header}>
-          <MaterialIcons name="emoji-events" size={64} color={colors.primary} />
-          <Text style={styles.title}>Game Results</Text>
-          <Text style={styles.category}>{selectedCategory?.toUpperCase()}</Text>
+        {/* Share/Save Buttons */}
+        <View style={styles.shareButtonsContainer}>
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={handleShareResult}
+            disabled={isSaving}
+          >
+            <MaterialIcons name="share" size={22} color={colors.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={handleSaveResult}
+            disabled={isSaving}
+          >
+            <MaterialIcons name="download" size={22} color={colors.primary} />
+          </TouchableOpacity>
         </View>
 
-        {/* Score Summary */}
-        <View style={styles.summaryContainer}>
-          <Card style={styles.scoreCard}>
-            <MaterialIcons name="check-circle" size={32} color={colors.success} />
-            <AnimatedNumber value={correctAnswers.length} style={styles.scoreNumber} />
-            <Text style={styles.scoreLabel}>Correct</Text>
-          </Card>
+        {/* Capturable Results View */}
+        <ViewShot
+          ref={viewShotRef}
+          options={{ format: 'png', quality: 1 }}
+          style={styles.captureContainer}
+        >
+          <View style={styles.captureContent}>
+            <View style={styles.header}>
+              <MaterialIcons name="emoji-events" size={64} color={colors.primary} />
+              <Text style={styles.title}>Game Results</Text>
+              <Text style={styles.category}>{selectedCategory?.toUpperCase()}</Text>
+            </View>
 
-          <Card style={styles.scoreCard}>
-            <MaterialIcons name="cancel" size={32} color={colors.error} />
-            <AnimatedNumber value={wrongAnswers.length} style={styles.scoreNumber} />
-            <Text style={styles.scoreLabel}>Wrong</Text>
-          </Card>
-        </View>
+            {/* Score Summary */}
+            <View style={styles.summaryContainer}>
+              <Card style={styles.scoreCard}>
+                <MaterialIcons name="check-circle" size={32} color={colors.success} />
+                <AnimatedNumber value={correctAnswers.length} style={styles.scoreNumber} />
+                <Text style={styles.scoreLabel}>Correct</Text>
+              </Card>
 
-        {/* Game Stats */}
-        <Card style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Total Questions:</Text>
-            <Text style={styles.statValue}>{totalQuestions}</Text>
+              <Card style={styles.scoreCard}>
+                <MaterialIcons name="cancel" size={32} color={colors.error} />
+                <AnimatedNumber value={wrongAnswers.length} style={styles.scoreNumber} />
+                <Text style={styles.scoreLabel}>Wrong</Text>
+              </Card>
+            </View>
+
+            {/* Game Stats */}
+            <Card style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>Total Questions:</Text>
+                <Text style={styles.statValue}>{totalQuestions}</Text>
+              </View>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>Game Duration:</Text>
+                <Text style={styles.statValue}>{gameDuration}s</Text>
+              </View>
+              <View style={[styles.statItem, styles.statItemLast]}>
+                <Text style={styles.statLabel}>Questions per Minute:</Text>
+                <Text style={styles.statValue}>
+                  {gameDuration > 0 ? ((totalQuestions / gameDuration) * 60).toFixed(1) : '0'}
+                </Text>
+              </View>
+            </Card>
+
+            {/* Branding */}
+            <View style={styles.brandingContainer}>
+              <Text style={styles.brandingText}>🎮 GuessWhat!</Text>
+            </View>
           </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Game Duration:</Text>
-            <Text style={styles.statValue}>{gameDuration}s</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Questions per Minute:</Text>
-            <Text style={styles.statValue}>
-              {gameDuration > 0 ? ((totalQuestions / gameDuration) * 60).toFixed(1) : '0'}
-            </Text>
-          </View>
-        </Card>
+        </ViewShot>
 
         {/* Answer Details */}
         {renderAnswerList(correctAnswers, 'Correct Answers', 'check-circle', colors.success)}
@@ -118,11 +221,21 @@ const GameResults = () => {
 
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
-          <Button onPress={handlePlayAgain} variant="primary" size="large">
+          <Button
+            onPress={handlePlayAgain}
+            variant="primary"
+            size="large"
+            leftIcon={<MaterialIcons name="replay" size={22} color={colors.textInverse} />}
+          >
             Play Again
           </Button>
 
-          <Button onPress={handleBackToHome} variant="primary" size="large">
+          <Button
+            onPress={handleBackToHome}
+            variant="primary"
+            size="large"
+            leftIcon={<MaterialIcons name="home" size={22} color={colors.textInverse} />}
+          >
             Back to Home
           </Button>
         </View>
@@ -140,6 +253,34 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: spacing.lg,
     paddingTop: spacing['2xl'],
+  },
+  shareButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  shareButton: {
+    width: 44,
+    height: 44,
+    borderRadius: borderRadius.full,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  captureContainer: {
+    backgroundColor: colors.background,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+  },
+  captureContent: {
+    padding: spacing.lg,
+    backgroundColor: colors.background,
   },
   header: {
     alignItems: 'center',
@@ -189,6 +330,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
+  statItemLast: {
+    borderBottomWidth: 0,
+  },
   statLabel: {
     fontSize: typography.sizes.base,
     color: colors.textSecondary,
@@ -197,6 +341,15 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.base,
     fontWeight: typography.weights.semibold,
     color: colors.text,
+  },
+  brandingContainer: {
+    alignItems: 'center',
+    marginTop: spacing.md,
+  },
+  brandingText: {
+    fontSize: typography.sizes.sm,
+    color: colors.textTertiary,
+    fontWeight: typography.weights.semibold,
   },
   answerSection: {
     marginBottom: spacing.lg,

@@ -124,7 +124,7 @@ const Countdown = () => {
                             <View style={styles.proTipContent}>
                                 <Text style={styles.proTipTitle}>PRO TIP</Text>
                                 <Text style={styles.proTipText}>
-                                    Tilt down for Correct, tilt up to Pass!
+                                    Answer the one's you know quickly and skip the rest!
                                 </Text>
                             </View>
                         </View>

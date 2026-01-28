@@ -2,7 +2,7 @@ import NavigateButton from '@/components/ui/NavigateButton';
 import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { borderRadius, colors, shadows, spacing, typography } from '@/constants/designTokens';
 import { usePortraitLock } from '@/hooks/usePortrait';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -17,7 +17,7 @@ const Home = () => {
         {/* Header */}
         <View style={styles.topHeader}>
           <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="person-circle-outline" size={32} color={colors.primary} />
+            <MaterialCommunityIcons name="star-four-points-circle-outline" size={32} color={colors.primary} />
           </TouchableOpacity>
           <Text style={styles.appTitle}>GuessWhat</Text>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/settings')}>
@@ -53,7 +53,7 @@ const Home = () => {
               Ahead-to-head battle of wits and speed.
             </Text>
             <NavigateButton
-              title='Select Mode'
+              title='Play Now'
               to='/category'
               variant='success'
             />
@@ -118,6 +118,12 @@ const styles = StyleSheet.create({
     color: colors.primary,
     letterSpacing: 1,
     marginBottom: spacing.sm,
+    backgroundColor: colors.primaryLight + '30',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.full,
+    alignSelf: 'flex-start',
+    overflow: 'hidden',
   },
   heading: {
     fontSize: typography.sizes['2xl'],

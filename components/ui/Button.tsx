@@ -6,7 +6,7 @@
 import { borderRadius, colors, shadows, spacing, springConfigs, typography } from '@/constants/designTokens';
 import * as Haptics from 'expo-haptics';
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextStyle, ViewStyle } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -25,6 +25,8 @@ interface ButtonProps {
     textStyle?: TextStyle;
     fullWidth?: boolean;
     haptic?: boolean;
+    leftIcon?: React.ReactNode;
+    rightIcon?: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -38,6 +40,8 @@ export const Button: React.FC<ButtonProps> = ({
     textStyle,
     fullWidth = false,
     haptic = true,
+    leftIcon,
+    rightIcon,
 }) => {
     const scale = useSharedValue(1);
 
@@ -89,7 +93,11 @@ export const Button: React.FC<ButtonProps> = ({
                     color={variant === 'outline' || variant === 'ghost' ? colors.primary : colors.textInverse}
                 />
             ) : (
-                <Text style={textStyles}>{children}</Text>
+                <View style={styles.content}>
+                    {leftIcon}
+                    <Text style={textStyles}>{children}</Text>
+                    {rightIcon}
+                </View>
             )}
         </AnimatedPressable>
     );
@@ -102,6 +110,12 @@ const styles = StyleSheet.create({
         borderRadius: borderRadius.md,
         minHeight: 44,
         ...shadows.sm,
+    },
+    content: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.sm,
     },
     fullWidth: {
         width: '100%',
