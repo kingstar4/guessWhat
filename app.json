@@ -38,7 +38,7 @@
           "image": "./assets/images/app-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "transparent"
+          "backgroundColor": "#ffffff"
         }
       ],
       "expo-video",
@@ -47,7 +47,8 @@
       "expo-image",
       "expo-web-browser",
       "expo-asset",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-media-library"
     ],
     "experiments": {
       "typedRoutes": true
